@@ -1,0 +1,18 @@
+import { AudioFx } from "/components/audio-fx.js";
+import { PageFx } from "/components/page-fx.js";
+import { ColumnFx } from "/components/column-fx.js";
+import { SectionFx } from "/components/section-fx.js";
+import { TextFx } from "/components/text-fx.js";
+import { HeadingFx } from "/components/heading-fx.js";
+import { ImageFx } from "/components/image-fx.js?test";
+import { LinkFx } from "/components/link-fx.js";
+import { VideoFx } from "/components/video-fx.js";
+customElements.define('audio-fx', AudioFx);
+customElements.define('page-fx', PageFx);
+customElements.define('column-fx', ColumnFx);
+customElements.define('section-fx', SectionFx);
+customElements.define('text-fx', TextFx);
+customElements.define('heading-fx', HeadingFx);
+customElements.define('link-fx', LinkFx);
+customElements.define('image-fx', ImageFx);
+customElements.define('video-fx', VideoFx);
