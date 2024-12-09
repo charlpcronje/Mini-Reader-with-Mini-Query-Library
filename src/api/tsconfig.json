@@ -1,0 +1,16 @@
+{
+    "composite": true,
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "outDir": "../../dist",                  // Compile output in the same folder
+        "rootDir": "../../",                 // Treat ./ as the root directory
+        "baseUrl": "../../",                     // Allow relative imports from the app folder
+        "paths": {
+            // Optional path aliases
+            "@root/*": ["./*"]
+        }
+    },
+    "include": ["./**/*.ts", "./**/*.json","./**/*.js"],
+    "exclude": ["node_modules"]
+}
