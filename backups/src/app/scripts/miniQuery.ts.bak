@@ -1,0 +1,228 @@
+// src/miniQuery.ts
+import { env } from '@root/env';
+console.log(env.APP_HOST);
+
+type CSSProperty = Partial<CSSStyleDeclaration>
+type EventCallback = (event: Event) => void
+type MiniQueryElements = Element | NodeListOf<Element> | Element[]
+
+/**
+ * AJAX configuration type
+ */
+type LoadConfig = {
+    base?: string
+    url?: string
+    type?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+    contentType?: 'application/json' | 'text/html' | 'text/plain'
+    dataType?: 'json' | 'xml' | 'html' | 'text' | 'script' | 'jsonp'
+    timeout?: number
+    data?: Record<string, unknown>
+    beforeSend?: () => void
+    complete?: () => void
+    done?: (response: unknown) => void
+    fail?: (error: Error) => void
+    always?: () => void
+}
+
+/**
+ * Default AJAX configuration
+ */
+const defaultLoadConfig: LoadConfig = {
+    base: env.APP_HOST,
+    url: '',
+    type: 'GET',
+    contentType: 'application/json',
+    dataType: 'json',
+    timeout: 5000,
+    data: {},
+}
+let loadConfig = { ...defaultLoadConfig }
+
+/**
+ * MiniQuery class for DOM manipulation and AJAX
+ */
+class MiniQuery {
+    elements: MiniQueryElements
+
+    constructor(selector: string | Element) {
+        this.elements =
+            typeof selector === 'string'
+                ? document.querySelectorAll(selector)
+                : selector
+    }
+
+    val(value?: string): string | MiniQuery {
+        if (value === undefined) {
+            if (this.elements instanceof Element) {
+                return (this.elements as HTMLInputElement).value || ''
+            }
+            return ''
+        }
+        this.forEachElement(el => {
+            (el as HTMLInputElement).value = value
+        })
+        return this
+    }
+
+    css(property: keyof CSSStyleDeclaration): string;
+    css(property: Partial<CSSStyleDeclaration>): MiniQuery;
+    css(property: keyof CSSStyleDeclaration, value: string): MiniQuery;
+    css(
+        property: keyof CSSStyleDeclaration | Partial<CSSStyleDeclaration>,
+        value?: string
+    ): string | MiniQuery {
+        if (typeof property === 'string' && value === undefined) {
+            // Get a CSS property
+            if (this.elements instanceof Element) {
+                const computedStyle = getComputedStyle(this.elements);
+                return computedStyle.getPropertyValue(property) || ''; // Fallback to empty string
+            }
+            throw new Error("Cannot retrieve CSS property for multiple elements");
+        }
+        if (typeof property === 'string' && value !== undefined) {
+            // Set a single CSS property 
+            this.forEachElement(el => { 
+                if (el instanceof HTMLElement) {
+                    el.style.setProperty(property, value);
+                }
+            });
+            return this;
+        }
+        if (typeof property === 'object') {
+            // Set multiple CSS properties
+            this.forEachElement(el => {
+                if (el instanceof HTMLElement) {
+                    for (const key in property) {
+                        if (Object.prototype.hasOwnProperty.call(property, key)) {
+                            el.style.setProperty(key, property[key] as string);
+                        }
+                    }
+                }
+            });
+            return this;
+        }
+        throw new Error("Invalid arguments for css()");
+    }
+    html(content?: string): string | MiniQuery {
+        if (content === undefined) {
+            if (this.elements instanceof Element) {
+                return this.elements.innerHTML || ''
+            }
+            return ''
+        }
+        this.forEachElement(el => {
+            el.innerHTML = content
+        })
+        return this
+    }
+
+    on(event: string, callback: EventCallback): MiniQuery {
+        this.forEachElement(el => el.addEventListener(event, callback))
+        return this
+    }
+
+    click(callback: EventCallback): MiniQuery {
+        return this.on('click', callback)
+    }
+
+    change(callback: EventCallback): MiniQuery {
+        return this.on('change', callback)
+    }
+
+    mouseover(callback: EventCallback): MiniQuery {
+        return this.on('mouseover', callback)
+    }
+
+    mousedown(callback: EventCallback): MiniQuery {
+        return this.on('mousedown', callback)
+    }
+
+    mouseup(callback: EventCallback): MiniQuery {
+        return this.on('mouseup', callback)
+    }
+
+    private forEachElement(callback: (el: Element) => void): void {
+        if (this.elements instanceof Element) {
+            callback(this.elements)
+        } else if (this.elements instanceof NodeList || Array.isArray(this.elements)) {
+            this.elements.forEach(el => callback(el))
+        }
+    }
+}
+
+/**
+ * Factory function for creating a MiniQuery instance
+ */
+function $(selector: string | Element): MiniQuery {
+    return new MiniQuery(selector)
+}
+
+/**
+ * Configure default settings for AJAX
+ */
+$.loadSetup = (config: Partial<LoadConfig>): void => {
+    loadConfig = { ...loadConfig, ...config }
+}
+
+/**
+ * Perform AJAX requests with configurable settings
+ */
+$.load = async (config: Partial<LoadConfig>): Promise<unknown> => {
+    const settings = { ...loadConfig, ...config }
+    const headers = { 'Content-Type': settings.contentType! }
+
+    const options: RequestInit = {
+        method: settings.type,
+        headers,
+        body: settings.type === 'GET' ? undefined : JSON.stringify(settings.data),
+    }
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), settings.timeout!)
+    options.signal = controller.signal
+
+    if (settings.beforeSend) settings.beforeSend()
+
+    try {
+        const response = await fetch(`${settings.base}${settings.url}`, options)
+        clearTimeout(timeoutId)
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        let result: unknown
+        switch (settings.dataType) {
+            case 'json':
+                result = await response.json()
+                break
+            case 'xml':
+                result = new DOMParser().parseFromString(
+                    await response.text(),
+                    'application/xml'
+                )
+                break
+            case 'html':
+            case 'text':
+                result = await response.text()
+                break
+            case 'script':
+                result = await response.text().then(eval)
+                break
+            default:
+                result = await response.text()
+        }
+
+        if (settings.done) settings.done(result)
+        return result
+    } catch (error) {
+        if (settings.fail) settings.fail(error as Error)
+        throw error
+    } finally {
+        if (settings.complete) settings.complete()
+        if (settings.always) settings.always()
+    }
+}
+
+// Expose the `$` function globally
+;(window as any).$ = $

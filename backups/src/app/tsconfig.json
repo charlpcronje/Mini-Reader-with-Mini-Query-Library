@@ -1,0 +1,19 @@
+{
+    "composite": true,
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "outDir": "../../dist",                        // Compile output next to source files
+        "rootDir": "../../",                   // Ensure root directory includes env.ts
+        "baseUrl": "../../",                   // Keep relative imports working
+        "paths": {
+            "@components/*": ["./src/app/components/*"],
+            "@pages/*": ["./src/app/pages/*"],
+            "@scripts/*": ["./src/app/scripts/*"],
+            "@app/*": ["./src/app/*"],
+            "@root/*": ["./*"]
+        }
+    },
+    "include": ["./**/*.ts", "./**/*.json", "./**/*.js", "../../env.ts"], // Include env.ts explicitly
+    "exclude": ["node_modules", "tsconfig.json"]
+}

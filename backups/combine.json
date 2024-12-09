@@ -1,0 +1,24 @@
+{
+    "root_path": "/var/www/dev/HeEPPjs",
+    "output_path": "/var/www/dev/HeEPPjs/combined.md",
+    "gitignore_path": "",
+    "exclude_folders": [
+        ".history",
+        "docs",
+        ".git",
+        "node_modules",
+        ".vscode",
+        "dist"
+    ],
+    "exclude_files": [
+        "combined.md",
+        "combine.json",
+        "package-lock.json"
+    ],
+    "file_types": [
+        ".ts",
+        ".env",
+        ".json",
+        ".jsonc"
+    ]
+}
