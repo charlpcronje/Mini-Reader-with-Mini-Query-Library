@@ -5,3 +5,4 @@
 3. [MiniQuery Load](./miniQuery/load.md)
 4. [MiniQuery Events](./miniQuery/events.md)
 5. [Enhancements](./miniQuery/enhancements.md)
+6. [Systemic - Dynamic Object Store](./Systemic/README.md)
