@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniQuery Test Suite</title>
+   
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .test-area {
+            width: 70%;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        .test-area h1 {
+            text-align: center;
+        }
+
+        .test-area .element {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background: #fff;
+        }
+
+        .test-area .element:hover {
+            background: #f0f8ff;
+        }
+
+        .log-panel {
+            width: 30%;
+            background: #000;
+            color: #fff;
+            font-family: monospace;
+            overflow-y: auto;
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .log {
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+
+        .log.success {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .log.error {
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .summary {
+            padding-top: 10px;
+            border-top: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-area">
+            <h1>MiniQuery Test Elements</h1>
+            <!-- Input Elements -->
+            <div class="element" id="input1">Input 1 <input type="text" id="input-1"></div>
+            <div class="element" id="input2">Input 2 <input type="text" id="input-2"></div>
+
+            <!-- Button Elements -->
+            <div class="element" id="button1">Button 1 <button id="button-1">Click Me</button></div>
+            <div class="element" id="button2">Button 2 <button id="button-2">Click Me</button></div>
+
+            <!-- Div for HTML manipulation -->
+            <div class="element" id="html-div">HTML Div <div id="html-content">Initial Content</div></div>
+
+            <!-- Div for CSS Manipulation -->
+            <div class="element" id="css-div">CSS Div <div id="css-content" style="background: #ddd; padding: 10px;">CSS Target</div></div>
+        </div>
+        <div class="log-panel" id="log-panel"></div>
+    </div>
+
+    <script type="module" src="tests.js"></script>
+</body>
+</html>
