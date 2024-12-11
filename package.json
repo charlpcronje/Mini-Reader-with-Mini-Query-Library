@@ -1,12 +1,13 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "npm vite --host",
     "build": "vite build",
     "serve": "vite preview"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
