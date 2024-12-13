@@ -1,5 +1,5 @@
 /**
- * @fileoverview This file contains the implementation of the Systemic class,
+ * @fileoverview This file contains the implementation of the FX class,
  * which provides a dynamic object creation system with plugin support.
  */
 
@@ -9,20 +9,20 @@ import litPlugin from "./litPlugin.js";
  * Represents the core of the dynamic object system.
  * @class
  */
-class Systemic {
+class FX {
   /**
-   * @type {Systemic}
+   * @type {FX}
    */
   static instance = null;
 
   /**
-   * @returns {Systemic}
+   * @returns {FX}
    */
   static getInstance() {
-    if (!Systemic.instance) {
-      Systemic.instance = new Systemic();
+    if (!FX.instance) {
+      FX.instance = new FX();
     }
-    return Systemic.instance;
+    return FX.instance;
   }
 
   constructor() {
@@ -95,7 +95,7 @@ class Systemic {
           target.value = value;
           return true;
         }
-        if (typeof value === "object" && value !== null && !(value instanceof Systemic)) {
+        if (typeof value === "object" && value !== null && !(value instanceof FX)) {
           // If value is an object literal, add its properties to the dynamic object's value
           if(!target[prop].value) {
             target[prop].value = {};
@@ -145,7 +145,7 @@ class Systemic {
    */
   set(path, value) {
     const target = this.resolvePath(path);
-     if (typeof value === "object" && value !== null && !(value instanceof Systemic)) {
+     if (typeof value === "object" && value !== null && !(value instanceof FX)) {
       // If value is an object literal, add its properties to the dynamic object's value
       if(!target.value) {
         target.value = {};
@@ -175,5 +175,5 @@ class Systemic {
   }
 }
 
-const $ = Systemic.getInstance();
-export default $;
+const fx = FX.getInstance();
+export default fx;
