@@ -8,7 +8,7 @@ import { ImageFx } from "/components/image-fx.js?test";
 import { LinkFx } from "/components/link-fx.js";
 import { VideoFx } from "/components/video-fx.js";
 customElements.define('audio-fx', AudioFx);
-customElements.define('page-fx', PageFx);
+
 customElements.define('column-fx', ColumnFx);
 customElements.define('section-fx', SectionFx);
 customElements.define('text-fx', TextFx);

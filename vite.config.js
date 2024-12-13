@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-
+import fs from 'fs';
 export default defineConfig({
     root: resolve(__dirname, 'src/app'), // Entry point for the app
     server: {
@@ -22,9 +22,17 @@ export default defineConfig({
         {
             name: 'serve-api-mock',
             configureServer(server) {
-                server.middlewares.use('/api', (req, res, next) => {
+                server.middlewares.use('/api', (req, res) => {
                     const filePath = resolve(__dirname, `src/api${req.url}`);
-                    res.sendFile(filePath);
+                    fs.access(filePath, fs.constants.F_OK, err => {
+                        if (err) {
+                            res.writeHead(404, { 'Content-Type': 'text/plain' });
+                            res.end('Not Found');
+                        } else {
+                            const stream = fs.createReadStream(filePath);
+                            stream.pipe(res);
+                        }
+                    });
                 });
             },
         },

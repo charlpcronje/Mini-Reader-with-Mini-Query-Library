@@ -18,6 +18,9 @@ let loadConfig = { ...defaultLoadConfig };
  */
 class MiniQuery {
     constructor(selector) {
+        if (!selector) {
+            throw new Error('Invalid selector: Selector cannot be null or undefined');
+        }
         this.elements =
             typeof selector === 'string'
                 ? document.querySelectorAll(selector)
@@ -28,13 +31,40 @@ class MiniQuery {
             if (this.elements instanceof Element) {
                 return this.elements.value || '';
             }
+            if (this.elements instanceof NodeList || Array.isArray(this.elements)) {
+                const firstElement = this.elements[0];
+                if (firstElement instanceof HTMLInputElement) {
+                    return firstElement.value || '';
+                }
+            }
             return '';
         }
         this.forEachElement(el => {
-            el.value = value;
+            if (el instanceof HTMLInputElement) {
+                el.value = value;
+            }
         });
         return this;
     }
+
+    html(content) {
+        if (content === undefined) {
+            if (this.elements instanceof Element) {
+                return this.elements.innerHTML || '';
+            }
+            if (this.elements instanceof NodeList || Array.isArray(this.elements)) {
+                const firstElement = this.elements[0];
+                return firstElement ? firstElement.innerHTML || '' : '';
+            }
+            return '';
+        }
+        this.forEachElement(el => {
+            el.innerHTML = content;
+        });
+        return this;
+    }
+    
+    
     css(property, value) {
         if (typeof property === 'string' && value === undefined) {
             // Get a CSS property
@@ -42,10 +72,18 @@ class MiniQuery {
                 const computedStyle = getComputedStyle(this.elements);
                 return computedStyle.getPropertyValue(property) || ''; // Fallback to empty string
             }
-            throw new Error("Cannot retrieve CSS property for multiple elements");
+            if (this.elements instanceof NodeList || Array.isArray(this.elements)) {
+                // Get CSS for the first element in the collection
+                const firstElement = this.elements[0];
+                if (firstElement instanceof Element) {
+                    const computedStyle = getComputedStyle(firstElement);
+                    return computedStyle.getPropertyValue(property) || ''; // Fallback to empty string
+                }
+            }
+            throw new Error("Cannot retrieve CSS property for the selected elements");
         }
         if (typeof property === 'string' && value !== undefined) {
-            // Set a single CSS property 
+            // Set a single CSS property
             this.forEachElement(el => {
                 if (el instanceof HTMLElement) {
                     el.style.setProperty(property, value);
@@ -68,18 +106,8 @@ class MiniQuery {
         }
         throw new Error("Invalid arguments for css()");
     }
-    html(content) {
-        if (content === undefined) {
-            if (this.elements instanceof Element) {
-                return this.elements.innerHTML || '';
-            }
-            return '';
-        }
-        this.forEachElement(el => {
-            el.innerHTML = content;
-        });
-        return this;
-    }
+    
+    
     on(event, callback) {
         this.forEachElement(el => el.addEventListener(event, callback));
         return this;
@@ -108,18 +136,36 @@ class MiniQuery {
         }
     }
 }
+
 /**
  * Factory function for creating a MiniQuery instance
  */
 function $(selector) {
     return new MiniQuery(selector);
 }
+
 /**
  * Configure default settings for AJAX
  */
 $.loadSetup = (config) => {
-    loadConfig = { ...loadConfig, ...config };
+    console.log(".loadSetup: config:", config);
+    const validKeys = Object.keys(defaultLoadConfig);
+    const filteredConfig = Object.keys(config)
+        .filter(key => validKeys.includes(key))
+        .reduce((obj, key) => {
+            obj[key] = config[key];
+            return obj;
+        }, {});
+    loadConfig = { ...loadConfig, ...filteredConfig }; // Merge only valid keys
 };
+
+/**
+ * Retrieve current AJAX load configuration
+ */
+$.loadConfig = () => {
+    return loadConfig;
+};
+
 /**
  * Perform AJAX requests with configurable settings
  */
@@ -177,3 +223,5 @@ $.load = async (config) => {
     }
 };
 window.$ = $;
+export { $, MiniQuery };
+

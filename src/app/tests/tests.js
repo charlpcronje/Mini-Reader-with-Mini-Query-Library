@@ -1,6 +1,8 @@
 import {$, MiniQuery} from '../scripts/miniQuery.js';
 
 class TestSuite {
+    loadConfig = $.loadConfig;
+
     constructor(logPanelId) {
         this.logPanel = document.getElementById(logPanelId);
         this.testResults = [];
@@ -275,14 +277,14 @@ function runTests() {
     try {
         const testCode = `
             $.load({
-                url: '/api/getUsers.json',
+                url: 'api/getUsers.json',
                 type: 'GET',
                 done: (data) => { console.log(data); },
                 fail: (err) => { console.error(err); },
             });
         `;
         $.load({
-            url: '/api/getUsers.json',
+            url: 'api/getUsers.json',
             type: 'GET',
             done: () => {
                 testSuite.addTestResult('AJAX - GET Request', true, testCode);
@@ -298,14 +300,14 @@ function runTests() {
     try {
         const testCode = `
             $.load({
-                url: '/api/getUsers.json',
+                url: 'api/getUsers.json',
                 type: 'GET',
                 beforeSend: () => { console.log('beforeSend called'); },
             });
         `;
         let beforeSendCalled = false;
         $.load({
-            url: '/api/getUsers.json',
+            url: 'api/getUsers.json',
             type: 'GET',
             beforeSend: () => {
                 beforeSendCalled = true;
@@ -328,14 +330,14 @@ function runTests() {
     try {
         const testCode = `
             $.load({
-                url: '/api/getUsers.json',
+                url: 'api/getUsers.json',
                 type: 'GET',
                 done: (data) => { console.log('done called with:', data); },
             });
         `;
         let doneCalled = false;
         $.load({
-            url: '/api/getUsers.json',
+            url: 'api/getUsers.json',
             type: 'GET',
             done: (data) => {
                 doneCalled = true;
@@ -385,7 +387,7 @@ function runTests() {
     try {
         const testCode = `
             $.load({
-                url: '/api/getUsers.json',
+                url: 'api/getUsers.json',
                 type: 'GET',
                 complete: () => { console.log('complete called'); },
                 always: () => { console.log('always called'); },
@@ -394,7 +396,7 @@ function runTests() {
         let completeCalled = false;
         let alwaysCalled = false;
         $.load({
-            url: '/api/getUsers.json',
+            url: 'api/getUsers.json',
             type: 'GET',
             complete: () => {
                 completeCalled = true;
@@ -419,48 +421,89 @@ function runTests() {
     try {
         const testCode = `
             $.loadSetup({ timeout: 10000 });
-            const config = $.loadConfig;
+            const config = $.loadConfig();
+            console.log(config); // Debugging
         `;
+        console.log("Before loading setup");
         $.loadSetup({ timeout: 10000 });
-        const config = loadConfig;
+        const config = $.loadConfig(); // Call the function to get the config object
+        console.log("config with timeout:", config);
         if (config.timeout === 10000) {
             testSuite.addTestResult('AJAX Configuration - Update Default Timeout', true, testCode);
         } else {
-            throw new Error('Default configuration not updated correctly');
+            throw new Error(`Expected timeout to be 10000, but got: ${config ? config.timeout : 'undefined'}`);
         }
     } catch (error) {
-        testSuite.addTestResult('AJAX Configuration - Update Default Timeout', false, error.message);
+        testSuite.addTestResult(
+            'AJAX Configuration - Update Default Timeout',
+            false,
+            `
+                $.loadSetup({ timeout: 10000 });
+                const config = $.loadConfig();
+                console.log(config); // Debugging output: ${error.message}
+            `,
+            error.message
+        );
     }
 
     try {
         const testCode = `
-            $.loadSetup({ timeout: 10000 });
-            const settings = $.load({ url: '/api/getUsers.json', type: 'POST' });
+            $.loadSetup({ timeout: 10000, type: 'POST' });
+            const config = $.loadConfig();
+            console.log(config); // Debugging
         `;
-        $.loadSetup({ timeout: 10000 });
-        const settings = { ...loadConfig, type: 'POST', url: '/api/getUsers.json' };
-        if (settings.timeout === 10000 && settings.type === 'POST' && settings.url === '/api/getUsers.json') {
+        $.loadSetup({ timeout: 10000, type: 'POST' });
+        const config = $.loadConfig();
+        if (config && config.timeout === 10000 && config.type === 'POST') {
             testSuite.addTestResult('AJAX Configuration - Merge Custom Configurations', true, testCode);
         } else {
-            throw new Error('Custom configurations not merged correctly');
+            throw new Error(`
+                Configuration mismatch.
+                Expected: { timeout: 10000, type: 'POST' }
+                Received: ${JSON.stringify(config, null, 2)}
+            `);
         }
     } catch (error) {
-        testSuite.addTestResult('AJAX Configuration - Merge Custom Configurations', false, error.message);
+        testSuite.addTestResult(
+            'AJAX Configuration - Merge Custom Configurations',
+            false,
+            `
+                $.loadSetup({ timeout: 10000, type: 'POST' });
+                const config = $.loadConfig();
+                console.log(config); // Debugging output: ${error.message}
+            `,
+            error.message
+        );
     }
     
 
     try {
         const testCode = `
             $.loadSetup({ invalidKey: 'invalidValue' });
+            const config = $.loadConfig();
+            console.log(config); // Debugging
         `;
         $.loadSetup({ invalidKey: 'invalidValue' });
-        if (loadConfig.invalidKey === undefined) {
+        const config = $.loadConfig();
+        if (config && config.invalidKey === undefined) {
             testSuite.addTestResult('AJAX Configuration - Invalid Key Handling', true, testCode);
         } else {
-            throw new Error('Invalid key was added to the configuration');
+            throw new Error(`
+                Invalid key should not be present.
+                Received: ${JSON.stringify(config, null, 2)}
+            `);
         }
     } catch (error) {
-        testSuite.addTestResult('AJAX Configuration - Invalid Key Handling', false, error.message);
+        testSuite.addTestResult(
+            'AJAX Configuration - Invalid Key Handling',
+            false,
+            `
+                $.loadSetup({ invalidKey: 'invalidValue' });
+                const config = $.loadConfig();
+                console.log(config); // Debugging output: ${error.message}
+            `,
+            error.message
+        );
     }
     
     try {
