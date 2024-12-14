@@ -60,5 +60,43 @@ const body fx.dom.$("body");
   - value
   - lit (from the litPlugin)
   - nodes (for it's child Dynamic Objects)
-  - type="dom"
+  - type="dom" The name of the plugin specified in the `name` of the plugin, example:
+  ```js
+    const litPlugin = {
+       name: "lit",
+       types: ["dom"], 
+       ... // rest of the plugin
+  ```
+  - Become the type of the Dynamic Object
+  - $ (the DOM plugin) and it's name should be `dom`
+  - So when $.fx.dom.$("body") is called, it must wrap the body dag in a dynamic property and give it a type="dom" and it must add it as a child of `$.fx.dom` on the `nodes` property with the name attribute as set on the html element (body tag) selected, and if no name attribute is not set then it will get the tag as the name.
+  - So $.fx.dom.body is the Dynamic Object that wraps the body tag and it has the following properties:
+    - value
+    - lit (from the litPlugin) because the lit plugin is applied to all Dynamic Objects with the type of `dom`
+    - nodes: {
+        header: {
+
+        }
+        content: {
+            col[0]: {
+
+            }
+            col[1]: {
+
+            }
+            col[2]: {
+
+            }
+        }
+        footer: {
+            text: {
+
+            }
+            p: [
+                
+            ]
+        }
+    } (for it's child Dynamic Objects, but they will only be added as Dynamic Objects as they are being accessed. When aa Dynamic object is of type `dom` it's normal behavior is to select dom elements so fx.dom.body.header will select the dom element within body with the name attribute with the value of header or with the tag header.
+
+    When there are more than one element with the same name attribute or tag, then they will be added to an array.
 
