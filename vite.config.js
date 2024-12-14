@@ -14,8 +14,10 @@ export default defineConfig({
     },
     resolve: {
         alias: {
+            '@src': resolve(__dirname, 'src'),     // Alias '@src' to 'src'
+            '@fx': resolve(__dirname, 'src/fx'),   // Alias '@fx' to 'src/fx'
             '@app': resolve(__dirname, 'src/app'), // Alias '@app' to 'src/app'
-            '@api': resolve(__dirname, 'src/api'), // Alias '@api' to 'src/api'
+            '@api': resolve(__dirname, 'src/api')  // Alias '@api' to 'src/api'
         },
     },
     plugins: [
