@@ -9,7 +9,7 @@
 - [Base Version](./BaseVersion.md)
 - [Flat Path System]('./flatPathSystem.md')
 - [Plugin System V2](./pluginsSystemv2.md)
-- [Hybrid FX, Systemic & MiniQuery](./hybridFxSystemicMiniQuery.md)
+- [Hybrid FX, DOM & LitElement](./hybridFXDOMLit.md)
 
 ## Versions
 

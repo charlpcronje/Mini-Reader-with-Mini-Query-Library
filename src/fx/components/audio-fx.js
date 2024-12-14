@@ -7,3 +7,5 @@ export class AudioFx extends LitElement {
       `;
     }
 }
+
+customElements.define('audio-fx', AudioFx);

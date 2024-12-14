@@ -1,4 +1,4 @@
-import { env } from '../env.js';
+import { env } from '@src/env.js';
 console.log(env);
 /**
  * Default AJAX configuration
@@ -14,9 +14,9 @@ const defaultLoadConfig = {
 };
 let loadConfig = { ...defaultLoadConfig };
 /**
- * MiniQuery class for DOM manipulation and AJAX
+ * DOM class for DOM manipulation and AJAX
  */
-class MiniQuery {
+class DOM {
     constructor(selector) {
         if (!selector) {
             throw new Error('Invalid selector: Selector cannot be null or undefined');
@@ -138,10 +138,10 @@ class MiniQuery {
 }
 
 /**
- * Factory function for creating a MiniQuery instance
+ * Factory function for creating a DOM instance
  */
 function $(selector) {
-    return new MiniQuery(selector);
+    return new DOM(selector);
 }
 
 /**
@@ -223,5 +223,5 @@ $.load = async (config) => {
     }
 };
 window.$ = $;
-export { $, MiniQuery };
+export { $, DOM };
 

@@ -7,3 +7,5 @@ export class HeadingFx extends LitElement {
       `;
     }
 }
+
+customElements.define('heading-fx', HeadingFx);

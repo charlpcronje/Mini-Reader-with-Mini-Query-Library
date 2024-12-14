@@ -1,12 +1,12 @@
 /** 
- * /src/app/components/page-fx.js
+ * /src/fx/components/page-fx.js
  * @file page-fx.js - The PageFx component extending BaseComponent.
  */
 
 import { html, css } from 'lit';
-import { BaseComponent } from './BaseComponent.js';
-import { Logger } from '../utils/Logger.js';
-import { ErrorHandler } from '../utils/ErrorHandler.js';
+import { BaseComponent } from '@fx/components/BaseComponent.js';
+import { Logger } from '@fx/utils/Logger.js';
+import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
 
 /**
  * @class PageFx

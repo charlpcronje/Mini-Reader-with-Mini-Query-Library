@@ -7,3 +7,5 @@ export class RowFx extends LitElement {
       `;
     }
 }
+
+customElements.define('row-fx', RowFx);

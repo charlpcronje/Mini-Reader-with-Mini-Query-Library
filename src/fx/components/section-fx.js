@@ -7,3 +7,5 @@ export class SectionFx extends LitElement {
       `;
     }
 }
+
+customElements.define('section-fx', SectionFx);

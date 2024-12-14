@@ -7,3 +7,5 @@ export class VideoFx extends LitElement {
       `;
     }
 }
+
+customElements.define('video-fx', VideoFx);

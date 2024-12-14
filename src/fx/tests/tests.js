@@ -1,4 +1,5 @@
-import {$, MiniQuery} from '../scripts/miniQuery.js';
+import {$, DOM} from '../DOM.js';
+import fx from '../FX.js';
 
 class TestSuite {
     loadConfig = $.loadConfig;
@@ -134,9 +135,9 @@ function runTests() {
     // 1. Constructor Tests
     // =====================
     try {
-        const testCode = `const instance = new MiniQuery('.element');`;
+        const testCode = `const instance = new DOM('.element');`;
         console.log(testCode);
-        const instance = new MiniQuery('.element');
+        const instance = new DOM('.element');
     
         if (instance.elements.length > 0) {
             testSuite.addTestResult('Constructor - Valid Selector', true, testCode);
@@ -148,8 +149,8 @@ function runTests() {
     }
 
     try {
-        const testCode = `const instance = new MiniQuery(document.querySelector('.element'));`;
-        const instance = new MiniQuery(document.querySelector('.element'));
+        const testCode = `const instance = new DOM(document.querySelector('.element'));`;
+        const instance = new DOM(document.querySelector('.element'));
         if (instance.elements instanceof Element) {
             testSuite.addTestResult('Constructor - DOM Element', true, testCode);
         } else {
@@ -160,11 +161,15 @@ function runTests() {
     }
 
     try {
-        const testCode = `const instance = new MiniQuery(null);`;
-        const instance = new MiniQuery(null);
-        testSuite.addTestResult('Constructor - Invalid Input', false, testCode, 'Should throw an error');
+        const testCode = `const instance = new DOM(null);`;
+         try {
+            new DOM(null);
+            testSuite.addTestResult('Constructor - Invalid Input', false, testCode, 'Should throw an error');
+        } catch (error) {
+            testSuite.addTestResult('Constructor - Invalid Input', true, error.message);
+        }
     } catch (error) {
-        testSuite.addTestResult('Constructor - Invalid Input', true, error.message);
+        testSuite.addTestResult('Constructor - Invalid Input', false, error.message);
     }
 
     // =================
@@ -172,11 +177,11 @@ function runTests() {
     // =================
     try {
         const testCode = `
-            const input = new MiniQuery('#input-1');
+            const input = new DOM('#input-1');
             input.val('Test Value');
             const value = input.val();
         `;
-        const input = new MiniQuery('#input-1');
+        const input = new DOM('#input-1');
         input.val('Test Value');
         const value = input.val();
         if (value === 'Test Value') {
@@ -190,10 +195,10 @@ function runTests() {
 
     try {
         const testCode = `
-            const input = new MiniQuery('#non-existent');
+            const input = new DOM('#non-existent');
             const value = input.val();
         `;
-        const input = new MiniQuery('#non-existent');
+        const input = new DOM('#non-existent');
         const value = input.val();
         if (value === '') {
             testSuite.addTestResult('val() - Non-Input Element', true, testCode);
@@ -209,11 +214,11 @@ function runTests() {
     // =================
     try {
         const testCode = `
-            const element = new MiniQuery('#css-content');
+            const element = new DOM('#css-content');
             element.css('background', 'blue');
             const bgColor = element.css('background-color');
         `;
-        const element = new MiniQuery('#css-content');
+        const element = new DOM('#css-content');
         element.css('background', 'blue');
         const bgColor = element.css('background-color');
         if (bgColor === 'rgb(0, 0, 255)') {
@@ -230,11 +235,11 @@ function runTests() {
     // ==================
     try {
         const testCode = `
-            const element = new MiniQuery('#html-content');
+            const element = new DOM('#html-content');
             element.html('New Content');
             const content = element.html();
         `;
-        const element = new MiniQuery('#html-content');
+        const element = new DOM('#html-content');
         element.html('New Content');
         const content = element.html();
         if (content === 'New Content') {
@@ -251,12 +256,12 @@ function runTests() {
     // ========================
     try {
         const testCode = `
-            const button = new MiniQuery('#button-1');
+            const button = new DOM('#button-1');
             let clicked = false;
             button.click(() => { clicked = true; });
             button.elements[0].click();
         `;
-        const button = new MiniQuery('#button-1');
+        const button = new DOM('#button-1');
         let clicked = false;
         button.click(() => {
             clicked = true;
@@ -557,7 +562,35 @@ function runTests() {
         testSuite.addTestResult('AJAX - Response Parsing (XML)', false, error.message);
     }
     
-    
+    // ===================
+    // 7. DOM Plugin Tests
+    // ===================
+    try {
+        const testCode = `
+            const body = fx.dom.$("body");
+            const header = fx.dom.body.header;
+        `;
+        const body = fx.dom.$("body");
+        if (body.type !== "dom") {
+            throw new Error("Body Dynamic Object has incorrect type");
+        }
+        if (!fx.dom.nodes.body) {
+            throw new Error("Body Dynamic Object not added to fx.dom.nodes");
+        }
+        const header = fx.dom.body.header;
+         if (header.type !== "dom") {
+            throw new Error("Header Dynamic Object has incorrect type");
+        }
+        if (!fx.dom.body.nodes.header) {
+            throw new Error("Header Dynamic Object not added to fx.dom.body.nodes");
+        }
+        testSuite.addTestResult('DOM Plugin - Element Selection', true, testCode);
+    } catch (error) {
+        testSuite.addTestResult('DOM Plugin - Element Selection', false, `
+            const body = fx.dom.$("body");
+            const header = fx.dom.body.header;
+        `, error.message);
+    }
 
     // Summarize results
     testSuite.summarize();

@@ -7,3 +7,5 @@ export class LinkFx extends LitElement {
       `;
     }
 }
+
+customElements.define('link-fx', LinkFx);

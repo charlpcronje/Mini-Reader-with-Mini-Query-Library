@@ -7,3 +7,5 @@ export class TextFx extends LitElement {
       `;
     }
 }
+
+customElements.define('text-fx', TextFx);

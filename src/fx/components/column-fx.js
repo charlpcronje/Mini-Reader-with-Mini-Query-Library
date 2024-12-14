@@ -7,3 +7,5 @@ export class ColumnFx extends LitElement {
       `;
     }
 }
+
+customElements.define('column-fx', ColumnFx);

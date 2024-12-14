@@ -3,7 +3,8 @@
  * which provides a dynamic object creation system with plugin support.
  */
 
-import litPlugin from "./litPlugin.js";
+import litPlugin from "@fx/plugins/litPlugin.js";
+import domPlugin from "@fx/plugins/domPlugin.js";
 
 /**
  * Represents the core of the dynamic object system.
@@ -27,19 +28,20 @@ class FX {
 
   constructor() {
     /**
-     * @type {Object<string, {name: string, types: string[], apply: function}>}
+     * @type {Object<string, {name: string, types: string[], init: function}>}
      */
     this.plugins = {};
     this.root = this.createDynamicObject();
     this.registerPlugin(litPlugin);
+    this.registerPlugin(domPlugin);
   }
 
   /**
    * Registers a plugin to extend the functionality of dynamic objects.
-   * @param {{name: string, types: string[], apply: function}} plugin - The plugin to register.
+   * @param {{name: string, types: string[], init: function}} plugin - The plugin to register.
    */
   registerPlugin(plugin) {
-    if (!plugin || !plugin.name || !plugin.apply || !plugin.types) {
+    if (!plugin || !plugin.name || !plugin.init || !plugin.types) {
       console.error("Invalid plugin format:", plugin);
       return;
     }
@@ -51,7 +53,7 @@ class FX {
    * @param {string} type - The type of the dynamic object.
    * @returns {Proxy} - The wrapped dynamic object.
    */
-  createDynamicObject(type = "Static") {
+  createDynamicObject(type = "base") {
     const core = {
       value: null,
       type: type,
@@ -71,7 +73,7 @@ class FX {
     for (const pluginName in this.plugins) {
       const plugin = this.plugins[pluginName];
       if (plugin.types.includes(type)) {
-        plugin.apply(core);
+        plugin.init(core);
       }
     }
 

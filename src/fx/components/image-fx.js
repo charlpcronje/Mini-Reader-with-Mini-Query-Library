@@ -7,3 +7,6 @@ export class ImageFx extends LitElement {
       `;
     }
 }
+
+customElements.define('image-fx', ImageFx);
+
