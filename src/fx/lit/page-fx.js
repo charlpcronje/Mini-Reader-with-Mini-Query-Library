@@ -4,7 +4,7 @@
  */
 
 import { html, css } from 'lit';
-import { BaseComponent } from '@fx/components/BaseComponent.js';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { Logger } from '@fx/utils/Logger.js';
 import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
 
@@ -59,12 +59,13 @@ export class PageFx extends BaseComponent {
         font-size: ${this.styleFontSize};
         font-weight: ${this.styleFontWeight};
         color: ${this.styleColor};
+        height: 100%;
       `;
       const headerStyle = `
         width: 100%;
-        height: 200px;
+        height: 280px;
         ${bgImageStyle}
-        background-size: cover;
+        background-size: contain;
         background-position: center;
       `;
       const iconStyle = `
@@ -76,11 +77,29 @@ export class PageFx extends BaseComponent {
         background-size: cover;
         background-position: center;
       `;
+      const topbar = `
+        position: fixed;
+        background-color: #191919;
+        display: inline-block;
+        width: 100%;
+        color: #FFF;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      `;
+      const h1Style = `
+        margin-top: 0px;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+        color: #FFF;
+
+      `;
       return html`
+        <div class="topbar" style="${topbar}">
+            <span class="topbar-icon icon" style="${iconStyle}">
+            </span>${this.title}</span>
+        </div>
         <div class="header" style="${headerStyle}"></div>
         <div class="content-container" style="${containerStyle}">
-          <h1><span class="icon" style="${iconStyle}"></span> ${this.title}</h1>
-          <slot></slot>
+            <h1 style="${h1Style}"><span class="icon" style="${iconStyle}"></span> ${this.title}</h1>
+            <slot></slot>
         </div>
       `;
     } catch (error) {

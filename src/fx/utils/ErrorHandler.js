@@ -4,6 +4,7 @@
  */
 
 import { Logger } from './Logger.js';
+import { env } from '@src/env.js';
 
 /**
  * @class ErrorHandler

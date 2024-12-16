@@ -1,0 +1,31 @@
+{
+    "root_path": "/var/www/dev/mini.reader.webally.co.za",
+    "output_path": "/var/www/dev/mini.reader.webally.co.za/comp.md",
+    "gitignore_path": "",
+    "exclude_folders": [
+        ".history",
+        "docs",
+        ".git",
+        "node_modules",
+        ".vscode",
+        "dist",
+        "backups",
+        "tests",
+        "src/fx/tests"
+    ],
+    "exclude_files": [
+        "combined.md",
+        "combine.json",
+        "package-lock.json",
+        "src/fx/components/BaseComponent.js"
+    ],
+    "file_types": [
+        ".ts",
+        ".js",
+        ".env",
+        ".html",
+        ".json",
+        ".css",
+        ".md"
+    ]
+}

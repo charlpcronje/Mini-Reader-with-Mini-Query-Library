@@ -4,9 +4,10 @@ import fs from 'fs';
 export default defineConfig({
     root: resolve(__dirname, 'src/app'), // Entry point for the app
     server: {
+        host: 'mini.reader.webally.co.za',
         port: 5645, // Dev server port
         strictPort: true, // Fails if the port is already in use
-        open: true, // Opens the browser automatically on start
+        open: false // Opens the browser automatically on start
     },
     build: {
         outDir: resolve(__dirname, 'dist'), // Output directory for production

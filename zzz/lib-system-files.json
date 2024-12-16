@@ -1,0 +1,45 @@
+{
+    "root_path": "/var/www/dev/mini.reader.webally.co.za/",
+    "output_path": "/var/www/dev/mini.reader.webally.co.za/zzz/lib-system-files.md",
+    "gitignore_path": "",
+    "exclude_folders": [
+        ".history",
+        "docs",
+        ".git",
+        "node_modules",
+        ".vscode",
+        "src/app",
+        "backups",
+        "tests",
+        "src/fx/tests",
+        "src/fx/docs",
+        "zzz",
+        "src/fx/utils",
+        "src/fx/lit"
+    ],
+    "exclude_files": [
+        "src/fx/boot.js",
+        "src/api/tsconfig.json",
+        "src/api/getUsers.json",
+        "combined.md",
+        "src/.env",
+        "combine.json",
+        "package-lock.json",
+        "src/fx/components/BaseComponent.js",
+        "tsconfig.json",
+        "README.md",
+        "package.json",
+        ".env",
+        "vite.config.js",
+        "jest.config.js"
+    ],
+    "file_types": [
+        ".ts",
+        ".js",
+        ".env",
+        ".html",
+        ".json",
+        ".css",
+        ".md"
+    ]
+}

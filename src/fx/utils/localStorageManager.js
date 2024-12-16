@@ -2,21 +2,14 @@
  * src/app/utils/localStorageManager.js
  * @file localStorageManager.js - Manage local storage for events.
  */
-
-import { ErrorHandler } from './ErrorHandler.js';
+import { env } from '@src/env.js';
+import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
 
 /**
  * @class LocalStorageManager
  * @classdesc Manages storing and retrieving events from local storage.
  */
 export class LocalStorageManager {
-  /**
-   * @private
-   * @static
-   * @type {string}
-   */
-  static STORAGE_KEY = 'component_events';
-
   /**
    * @method saveEvent
    * @description Saves an event to local storage.
@@ -26,9 +19,9 @@ export class LocalStorageManager {
    */
   static saveEvent(eventObj, userId) {
     try {
-      const data = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || [];
+      const data = JSON.parse(localStorage.getItem(env.STORAGE_KEY)) || [];
       data.push(eventObj);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(env.STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       ErrorHandler.handleError(error, userId);
     }
@@ -42,7 +35,7 @@ export class LocalStorageManager {
    */
   static getEvents(userId) {
     try {
-      const data = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || [];
+      const data = JSON.parse(localStorage.getItem(env.STORAGE_KEY)) || [];
       return data;
     } catch (error) {
       ErrorHandler.handleError(error, userId);
