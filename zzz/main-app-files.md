@@ -4,19 +4,19 @@ This document contains an analysis of the project files.
 
 | No.   | File                                 | Lines    | Words    | AI Tokens |
 | ----- | ------------------------------------ | -------- | -------- | --------- |
-|  1    | ./src/env.js                         | 14       | 37       | 49        |
-|  2    | ./src/app/index.html                 | 18       | 37       | 129       |
+|  1    | ./src/env.js                         | 15       | 39       | 53        |
+|  2    | ./src/app/index.html                 | 18       | 38       | 134       |
 |  3    | ./src/app/app.js                     | 2        | 2        | 6         |
 |  4    | ./src/app/assets/css/styles.css      | 5        | 10       | 19        |
 |  5    | ./src/app/layouts/main.html          | 13       | 19       | 57        |
-|  6    | ./src/fx/boot.js                     | 11       | 56       | 98        |
-|       | Total                                | 63       | 161      | 358       |
+|  6    | ./src/fx/boot.js                     | 13       | 58       | 104       |
+|       | Total                                | 66       | 166      | 373       |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 63
-- Total Words: 161
-- Total AI Tokens: 358
+- Total Lines: 66
+- Total Words: 166
+- Total AI Tokens: 373
 
 ## File: src/env.js
 ```js
@@ -25,7 +25,8 @@ This document contains an analysis of the project files.
 // Define the environment configuration object
 const env = {
     APP_HOST: 'https://mini.reader.webally.co.za/',
-    APP_PORT: 80
+    APP_PORT: 80,
+    STORAGE_KEY: 'mini-reader-storage'
 };
 
 // Freeze the object to prevent modifications
@@ -53,7 +54,7 @@ export { env };
         Hello
     </page-fx>
 
-    <slot="body">
+    <slot name="body">test</slot>
 </body>
 </html>
 ```
@@ -92,7 +93,9 @@ html, body {
 
 ## File: src/fx/boot.js
 ```js
+import '@fx/FX.js';
 import "@fx/DOM.js";
+
 
 import { AudioFx } from "@fx/lit/audio-fx.js";
 import { PageFx } from "@fx/lit/page-fx.js";

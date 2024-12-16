@@ -10,14 +10,15 @@ This document contains an analysis of the project files.
 |  4    | ./.gitignore                         | 7        | 7        | 7         |
 |  5    | ./jest.config.js                     | 16       | 28       | 78        |
 |  6    | ./.babelrc                           | 4        | 4        | 12        |
-|  7    | ./src/env.js                         | 14       | 37       | 49        |
-|       | Total                                | 110      | 280      | 588       |
+|  7    | ./src/env.js                         | 15       | 39       | 53        |
+|  8    | ./.idea/.gitignore                   | 9        | 20       | 20        |
+|       | Total                                | 120      | 302      | 612       |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 110
-- Total Words: 280
-- Total AI Tokens: 588
+- Total Lines: 120
+- Total Words: 302
+- Total AI Tokens: 612
 
 ## File: package.json
 ```json
@@ -146,7 +147,8 @@ module.exports = config;
 // Define the environment configuration object
 const env = {
     APP_HOST: 'https://mini.reader.webally.co.za/',
-    APP_PORT: 80
+    APP_PORT: 80,
+    STORAGE_KEY: 'mini-reader-storage'
 };
 
 // Freeze the object to prevent modifications
@@ -154,6 +156,19 @@ Object.freeze(env);
 
 // Export the frozen object for use elsewhere
 export { env };
+
+```
+
+## File: .idea/.gitignore
+```
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
 
 ```
 

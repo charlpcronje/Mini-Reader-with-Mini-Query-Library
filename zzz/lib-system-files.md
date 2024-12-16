@@ -4,18 +4,18 @@ This document contains an analysis of the project files.
 
 | No.   | File                                 | Lines    | Words    | AI Tokens |
 | ----- | ------------------------------------ | -------- | -------- | --------- |
-|  1    | ./src/env.js                         | 14       | 37       | 49        |
-|  2    | ./src/fx/FX.js                       | 183      | 673      | 1108      |
+|  1    | ./src/env.js                         | 15       | 39       | 53        |
+|  2    | ./src/fx/FX.js                       | 183      | 670      | 1105      |
 |  3    | ./src/fx/DOM.js                      | 228      | 655      | 1162      |
 |  4    | ./src/fx/plugins/litPlugin.js        | 97       | 275      | 478       |
 |  5    | ./src/fx/plugins/domPlugin.js        | 91       | 261      | 459       |
-|       | Total                                | 613      | 1901     | 3256      |
+|       | Total                                | 614      | 1900     | 3257      |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 613
-- Total Words: 1901
-- Total AI Tokens: 3256
+- Total Lines: 614
+- Total Words: 1900
+- Total AI Tokens: 3257
 
 ## File: src/env.js
 ```js
@@ -24,7 +24,8 @@ This document contains an analysis of the project files.
 // Define the environment configuration object
 const env = {
     APP_HOST: 'https://mini.reader.webally.co.za/',
-    APP_PORT: 80
+    APP_PORT: 80,
+    STORAGE_KEY: 'mini-reader-storage'
 };
 
 // Freeze the object to prevent modifications
@@ -217,7 +218,7 @@ class FX {
 }
 
 const fx = FX.getInstance();
-export { fx as 🟥 };
+window.fx = fx;
 export default fx;
 
 ```

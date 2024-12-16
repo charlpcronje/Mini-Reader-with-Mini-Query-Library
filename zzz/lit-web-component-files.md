@@ -5,29 +5,29 @@ This document contains an analysis of the project files.
 | No.   | File                                 | Lines    | Words    | AI Tokens |
 | ----- | ------------------------------------ | -------- | -------- | --------- |
 |  1    | ./src/fx/utils/debounce.js           | 28       | 99       | 159       |
-|  2    | ./src/fx/utils/ErrorHandler.js       | 28       | 104      | 162       |
+|  2    | ./src/fx/utils/ErrorHandler.js       | 29       | 110      | 172       |
 |  3    | ./src/fx/utils/IDBManager.js         | 119      | 365      | 687       |
 |  4    | ./src/fx/utils/Logger.js             | 59       | 222      | 384       |
-|  5    | ./src/fx/utils/localStorageManager.js | 67       | 197      | 335       |
+|  5    | ./src/fx/utils/localStorageManager.js | 60       | 190      | 324       |
 |  6    | ./src/fx/lit/page-fx.js              | 142      | 395      | 814       |
-|  7    | ./src/fx/lit/text-fx.js              | 43       | 111      | 180       |
-|  8    | ./src/fx/lit/section-fx.js           | 17       | 42       | 77        |
-|  9    | ./src/fx/lit/row-fx.js               | 57       | 133      | 246       |
+|  7    | ./src/fx/lit/text-fx.js              | 43       | 111      | 182       |
+|  8    | ./src/fx/lit/section-fx.js           | 17       | 42       | 79        |
+|  9    | ./src/fx/lit/row-fx.js               | 57       | 133      | 248       |
 |  10   | ./src/fx/lit/column-fx.js            | 11       | 23       | 45        |
 |  11   | ./src/fx/lit/heading-fx.js           | 12       | 23       | 45        |
 |  12   | ./src/fx/lit/link-fx.js              | 12       | 23       | 45        |
-|  13   | ./src/fx/lit/audio-fx.js             | 16       | 36       | 58        |
-|  14   | ./src/fx/lit/video-fx.js             | 16       | 36       | 58        |
+|  13   | ./src/fx/lit/audio-fx.js             | 16       | 36       | 60        |
+|  14   | ./src/fx/lit/video-fx.js             | 16       | 39       | 63        |
 |  15   | ./src/fx/lit/image-fx.js             | 13       | 23       | 45        |
-|  16   | ./src/fx/lit/BaseComponent.js        | 409      | 1412     | 2601      |
-|  17   | ./src/fx/lit/MediaComponent.js       | 70       | 171      | 323       |
-|       | Total                                | 1119     | 3415     | 6264      |
+|  16   | ./src/fx/lit/BaseComponent.js        | 409      | 1412     | 2602      |
+|  17   | ./src/fx/lit/MediaComponent.js       | 117      | 325      | 602       |
+|       | Total                                | 1160     | 3571     | 6556      |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 1119
-- Total Words: 3415
-- Total AI Tokens: 6264
+- Total Lines: 1160
+- Total Words: 3571
+- Total AI Tokens: 6556
 
 ## File: src/fx/utils/debounce.js
 ```js
@@ -69,6 +69,7 @@ export function debounce(func, wait) {
  */
 
 import { Logger } from './Logger.js';
+import { env } from '@src/env.js';
 
 /**
  * @class ErrorHandler
@@ -285,21 +286,14 @@ export class Logger {
  * src/app/utils/localStorageManager.js
  * @file localStorageManager.js - Manage local storage for events.
  */
-
-import { ErrorHandler } from './ErrorHandler.js';
+import { env } from '@src/env.js';
+import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
 
 /**
  * @class LocalStorageManager
  * @classdesc Manages storing and retrieving events from local storage.
  */
 export class LocalStorageManager {
-  /**
-   * @private
-   * @static
-   * @type {string}
-   */
-  static STORAGE_KEY = 'component_events';
-
   /**
    * @method saveEvent
    * @description Saves an event to local storage.
@@ -309,9 +303,9 @@ export class LocalStorageManager {
    */
   static saveEvent(eventObj, userId) {
     try {
-      const data = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || [];
+      const data = JSON.parse(localStorage.getItem(env.STORAGE_KEY)) || [];
       data.push(eventObj);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(env.STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       ErrorHandler.handleError(error, userId);
     }
@@ -325,7 +319,7 @@ export class LocalStorageManager {
    */
   static getEvents(userId) {
     try {
-      const data = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || [];
+      const data = JSON.parse(localStorage.getItem(env.STORAGE_KEY)) || [];
       return data;
     } catch (error) {
       ErrorHandler.handleError(error, userId);
@@ -500,7 +494,7 @@ customElements.define('page-fx', PageFx);
 ```js
 // File: src/fx/lit/text-fx.js
 
-import { BaseComponent } from './BaseComponent.js';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';
 
 /**
@@ -547,7 +541,7 @@ customElements.define('text-fx', TextFx);
 ```js
 // Example: File: src/fx/lit/section-fx.js
 
-import { BaseComponent } from './BaseComponent.js';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html } from 'lit';
 
 /**
@@ -568,7 +562,7 @@ customElements.define('section-fx', SectionFx);
 ```js
 // File: src/fx/lit/row-fx.js
 
-import { BaseComponent } from './BaseComponent.js';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';
 
 /**
@@ -676,7 +670,7 @@ customElements.define('link-fx', LinkFx);
 ```js
 // File: src/fx/lit/audio-fx.js
 
-import { MediaComponent } from './media-component.js';
+import { MediaComponent } from '@fx/lit/MediaComponent.js';
 
 /**
  * @class AudioFx
@@ -696,11 +690,11 @@ customElements.define('audio-fx', AudioFx);
 ```js
 // File: src/fx/lit/video-fx.js
 
-import { MediaComponent } from './media-component.js';
+import { MediaComponent } from '@fx/lit/MediaComponent.js';
 
 /**
  * @class VideoFx
- * @classdesc A custom video player extending MediaComponent.
+ * @classdesc A custom video player with enhanced tracking and captions.
  */
 export class VideoFx extends MediaComponent {
   render() {
@@ -737,11 +731,11 @@ customElements.define('image-fx', ImageFx);
  */
 
 import { LitElement, html, css } from 'lit';
-import { Logger } from '../utils/Logger.js';
-import { ErrorHandler } from '../utils/ErrorHandler.js';
-import { LocalStorageManager } from '../utils/localStorageManager.js';
-import { debounce } from '../utils/debounce.js';
-import { IDBManager } from '../utils/IDBManager.js';
+import { Logger } from '@fx/utils/Logger.js';
+import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
+import { LocalStorageManager } from '@fx/utils/localStorageManager.js';
+import { debounce } from '@fx/utils/debounce.js';
+import { IDBManager } from '@fx/utils/IDBManager.js';
 
 export class BaseComponent extends LitElement {
     /**
@@ -1130,7 +1124,7 @@ export class BaseComponent extends LitElement {
      * @return {import('lit').CSSResult}
      */
     static get styles() {
-        return css`
+        return css`f
       :host {
         display: block;
       }
@@ -1146,12 +1140,13 @@ customElements.define('base-component', BaseComponent);
 ```js
 // File: src/fx/lit/media-component.js
 
-import { BaseComponent } from './BaseComponent.js';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';
+import { debounce } from '@fx/utils/debounce.js';
 
 /**
  * @class MediaComponent
- * @classdesc Base class for media components like AudioFx and VideoFx.
+ * @classdesc Base class for media components like AudioFx and VideoFx with detailed event tracking.
  */
 export class MediaComponent extends BaseComponent {
   static get properties() {
@@ -1162,7 +1157,7 @@ export class MediaComponent extends BaseComponent {
       loop: { type: Boolean, reflect: true },
       muted: { type: Boolean, reflect: true },
       controls: { type: Boolean, reflect: true },
-      caption: { type: String, reflect: true }, // Caption for media
+      caption: { type: String, reflect: true }, // Media caption
     };
   }
 
@@ -1174,8 +1169,56 @@ export class MediaComponent extends BaseComponent {
     this.muted = false;
     this.controls = true;
     this.caption = '';
+    this._lastPlaybackLogTime = 0;
   }
 
+  firstUpdated() {
+    super.firstUpdated();
+    this._setupMediaEventListeners();
+  }
+
+  /**
+   * @private
+   * @method _setupMediaEventListeners
+   * @description Sets up event listeners for media-specific events and tracks playback progress.
+   */
+  _setupMediaEventListeners() {
+    try {
+      const mediaElement = this.shadowRoot.querySelector('video, audio');
+      if (!mediaElement) return;
+
+      // List of media-specific events to track
+      const events = [
+        'play', 'pause', 'ended', 'volumechange',
+        'seeked', 'seeking', 'loadeddata', 'loadedmetadata',
+      ];
+
+      events.forEach((eventName) => {
+        mediaElement.addEventListener(eventName, (e) =>
+          this._logEvent(eventName, { currentTime: mediaElement.currentTime })
+        );
+      });
+
+      // Debounced logging for every second of playback
+      const logPlayback = debounce(() => {
+        const now = Math.floor(mediaElement.currentTime);
+        if (now !== this._lastPlaybackLogTime) {
+          this._lastPlaybackLogTime = now;
+          this._logEvent('playback-second', { currentTime: now });
+        }
+      }, 1000);
+
+      mediaElement.addEventListener('timeupdate', logPlayback);
+    } catch (error) {
+      console.error('Error setting up media event listeners:', error);
+    }
+  }
+
+  /**
+   * Renders the media element.
+   * @param {string} tagName - The tag name (e.g., 'audio', 'video') for the media element.
+   * @returns {import('lit').TemplateResult}
+   */
   renderMediaElement(tagName) {
     return html`
       <div class="media">
@@ -1185,9 +1228,7 @@ export class MediaComponent extends BaseComponent {
           ?loop=${this.loop}
           ?muted=${this.muted}
           ?controls=${this.controls}
-        >
-          <slot></slot>
-        </${tagName}>
+        ></${tagName}>
         ${this.caption ? html`<div class="caption">${this.caption}</div>` : ''}
       </div>
     `;

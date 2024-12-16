@@ -8,6 +8,7 @@
  * @typedef {Object} LitPlugin
  * @property {string} name - The name of the plugin.
  * @property {string[]} types - The types of dynamic objects this plugin applies to.
+ * @property {function} init - The function that initializes the plugin on a dynamic object.
  * @property {function} apply - The function that applies the plugin to a dynamic object.
  */
 
@@ -18,7 +19,7 @@
 const litPlugin = {
     name: "lit",
     types: ["dom"],
-    apply: (core) => {
+    init: (core) => {
         /**
          * @type {HTMLElement}
          */
