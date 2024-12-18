@@ -14,6 +14,6 @@
             "@root/*": ["./*"]
         }
     },
-    "include": ["./**/*.ts", "./**/*.json", "./**/*.js", "../../env.ts"], // Include env.ts explicitly
+    "include": ["./**/*.ts", "./**/*.json", "./**/*.js", "../../env.ts", "../fx/loader.js", "../env.js", "../fx/DOM.js", "../fx/plugins/litPlugin.js", "../FX.js"], // Include env.ts explicitly
     "exclude": ["node_modules", "tsconfig.json"]
 }

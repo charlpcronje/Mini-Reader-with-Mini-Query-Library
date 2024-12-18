@@ -7,16 +7,16 @@ This document contains an analysis of the project files.
 |  1    | ./src/env.js                         | 15       | 39       | 53        |
 |  2    | ./src/fx/FX.js                       | 281      | 1293     | 1956      |
 |  3    | ./src/fx/DOM.js                      | 227      | 652      | 1157      |
-|  4    | ./src/fx/boot.js                     | 190      | 756      | 1437      |
+|  4    | ./src/fx/boot.js                     | 203      | 783      | 1497      |
 |  5    | ./src/fx/plugins/litPlugin.js        | 98       | 290      | 497       |
 |  6    | ./src/fx/plugins/domPlugin.js        | 91       | 261      | 459       |
-|       | Total                                | 902      | 3291     | 5559      |
+|       | Total                                | 915      | 3318     | 5619      |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 902
-- Total Words: 3291
-- Total AI Tokens: 5559
+- Total Lines: 915
+- Total Words: 3318
+- Total AI Tokens: 5619
 
 ## File: src/env.js
 ```js
@@ -558,20 +558,33 @@ export { $, DOM };
 // /src/factory.js
 import '@fx/FX.js';
 import "@fx/DOM.js";
-import { DOM } from './DOM.js';
-import { FX, fx } from './FX.js';
+import { DOM } from '@fx/DOM.js';
+import { FX, fx } from '@fx/FX.js';
 
-import { AudioFx } from "@fx/lit/audio-fx.js";
-import { PageFx } from "@fx/lit/page-fx.js";
-import { SectionFx } from "@fx/lit/section-fx.js";
-import { RowFx } from "@fx/lit/row-fx.js";
-import { ColFx } from "@fx/lit/col-fx.js";
+/***  
+** Syncing Components
+***/
+import { AudioFx } from "@fx/html/sync/audio-fx.js";
+import { PageFx } from "@fx/html/sync/page-fx.js";
+import { SectionFx } from "@fx/html/sync/section-fx.js";
+import { RowFx } from "@fx/html/sync/row-fx.js";
+import { ColFx } from "@fx/html/sync/col-fx.js";
+import { TextFx } from "@fx/html/sync/text-fx.js";
+import { HeadingFx } from "@fx/html/sync/heading-fx.js";
+import { ImageFx } from "@fx/html/sync/image-fx.js?test";
+import { LinkFx } from "@fx/html/sync/link-fx.js";
+import { VideoFx } from "@fx/html/sync/video-fx.js";
 
-import { TextFx } from "@fx/lit/text-fx.js";
-import { HeadingFx } from "@fx/lit/heading-fx.js";
-import { ImageFx } from "@fx/lit/image-fx.js?test";
-import { LinkFx } from "@fx/lit/link-fx.js";
-import { VideoFx } from "@fx/lit/video-fx.js";
+/***  
+** Form Components
+***/
+import { VideoFx } from "@fx/html/forms/input-fx.js";
+
+
+/***  
+** UI Components
+***/
+import { VideoFx } from "@fx/html/ui/panel-fx.js";
 
 // Array of valid HTML tags for DOM element detection
 const HTML_TAGS = [

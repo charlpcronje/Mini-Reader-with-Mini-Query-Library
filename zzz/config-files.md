@@ -4,7 +4,7 @@ This document contains an analysis of the project files.
 
 | No.   | File                                 | Lines    | Words    | AI Tokens |
 | ----- | ------------------------------------ | -------- | -------- | --------- |
-|  1    | ./package.json                       | 20       | 37       | 114       |
+|  1    | ./package.json                       | 21       | 39       | 123       |
 |  2    | ./.env                               | 5        | 3        | 10        |
 |  3    | ./vite.config.js                     | 44       | 164      | 318       |
 |  4    | ./.gitignore                         | 8        | 8        | 8         |
@@ -12,13 +12,13 @@ This document contains an analysis of the project files.
 |  6    | ./.babelrc                           | 4        | 4        | 12        |
 |  7    | ./src/env.js                         | 15       | 39       | 53        |
 |  8    | ./.idea/.gitignore                   | 9        | 20       | 20        |
-|       | Total                                | 121      | 303      | 613       |
+|       | Total                                | 122      | 305      | 622       |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 121
-- Total Words: 303
-- Total AI Tokens: 613
+- Total Lines: 122
+- Total Words: 305
+- Total AI Tokens: 622
 
 ## File: package.json
 ```json
@@ -37,6 +37,7 @@ This document contains an analysis of the project files.
     "vite": "^6.0.3"
   },
   "dependencies": {
+    "@lit-labs/router": "^0.1.3",
     "dotenv": "^16.4.7",
     "lit": "^3.2.1"
   }

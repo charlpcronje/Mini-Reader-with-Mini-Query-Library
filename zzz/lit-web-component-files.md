@@ -9,25 +9,27 @@ This document contains an analysis of the project files.
 |  3    | ./src/fx/utils/IDBManager.js         | 119      | 365      | 687       |
 |  4    | ./src/fx/utils/Logger.js             | 59       | 222      | 384       |
 |  5    | ./src/fx/utils/localStorageManager.js | 60       | 190      | 324       |
-|  6    | ./src/fx/lit/page-fx.js              | 142      | 395      | 814       |
-|  7    | ./src/fx/lit/text-fx.js              | 43       | 111      | 182       |
-|  8    | ./src/fx/lit/section-fx.js           | 17       | 42       | 79        |
-|  9    | ./src/fx/lit/row-fx.js               | 57       | 133      | 248       |
-|  10   | ./src/fx/lit/heading-fx.js           | 55       | 133      | 253       |
-|  11   | ./src/fx/lit/link-fx.js              | 58       | 139      | 276       |
-|  12   | ./src/fx/lit/audio-fx.js             | 16       | 36       | 60        |
-|  13   | ./src/fx/lit/video-fx.js             | 16       | 39       | 63        |
-|  14   | ./src/fx/lit/image-fx.js             | 61       | 141      | 261       |
-|  15   | ./src/fx/lit/BaseComponent.js        | 409      | 1412     | 2602      |
-|  16   | ./src/fx/lit/MediaComponent.js       | 117      | 325      | 602       |
-|  17   | ./src/fx/lit/col-fx.js               | 54       | 121      | 206       |
-|       | Total                                | 1340     | 4013     | 7372      |
+|  6    | ./src/fx/lit/MediaComponent.js       | 117      | 325      | 602       |
+|  7    | ./src/fx/lit/BaseComponent.js        | 409      | 1412     | 2602      |
+|  8    | ./src/fx/lit/forms/input-fx.js       | 73       | 175      | 341       |
+|  9    | ./src/fx/lit/sync/audio-fx.js        | 16       | 36       | 60        |
+|  10   | ./src/fx/lit/sync/col-fx.js          | 54       | 121      | 206       |
+|  11   | ./src/fx/lit/sync/heading-fx.js      | 55       | 133      | 255       |
+|  12   | ./src/fx/lit/sync/image-fx.js        | 61       | 141      | 261       |
+|  13   | ./src/fx/lit/sync/link-fx.js         | 58       | 139      | 276       |
+|  14   | ./src/fx/lit/sync/page-fx.js         | 142      | 395      | 814       |
+|  15   | ./src/fx/lit/sync/row-fx.js          | 57       | 133      | 248       |
+|  16   | ./src/fx/lit/sync/section-fx.js      | 17       | 42       | 79        |
+|  17   | ./src/fx/lit/sync/text-fx.js         | 43       | 111      | 182       |
+|  18   | ./src/fx/lit/sync/video-fx.js        | 16       | 39       | 63        |
+|  19   | ./src/fx/lit/ui/panel-fx.js          | 37       | 66       | 127       |
+|       | Total                                | 1450     | 4254     | 7842      |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 1340
-- Total Words: 4013
-- Total AI Tokens: 7372
+- Total Lines: 1450
+- Total Words: 4254
+- Total AI Tokens: 7842
 
 ## File: src/fx/utils/debounce.js
 ```js
@@ -344,250 +346,100 @@ export class LocalStorageManager {
 
 ```
 
-## File: src/fx/lit/page-fx.js
+## File: src/fx/lit/MediaComponent.js
 ```js
-/** 
- * /src/fx/components/page-fx.js
- * @file page-fx.js - The PageFx component extending BaseComponent.
- */
+// File: src/fx/lit/media-component.js
 
-import { html, css } from 'lit';
 import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { Logger } from '@fx/utils/Logger.js';
-import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
+import { html, css } from 'lit';
+import { debounce } from '@fx/utils/debounce.js';
 
 /**
- * @class PageFx
- * @classdesc A LitElement web component representing a page with a header image and icon similar to Notion.
- * Extends BaseComponent to leverage event tracking and attribute management.
+ * @class MediaComponent
+ * @classdesc Base class for media components like AudioFx and VideoFx with detailed event tracking.
  */
-export class PageFx extends BaseComponent {
-  constructor() {
-    super();
-    try {
-      Logger.logEvent('PageFx.constructor', { message: 'PageFx constructed' }, this.user_id);
-    } catch (error) {
-      ErrorHandler.handleError(error, this.user_id);
-    }
+export class MediaComponent extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      src: { type: String, reflect: true },
+      autoplay: { type: Boolean, reflect: true },
+      loop: { type: Boolean, reflect: true },
+      muted: { type: Boolean, reflect: true },
+      controls: { type: Boolean, reflect: true },
+      caption: { type: String, reflect: true }, // Media caption
+    };
   }
 
-  /**
-   * @protected
-   * @method firstUpdated
-   * @description Called once the element’s DOM is updated. Additional setup for PageFx.
-   * @return {void}
-   */
+  constructor() {
+    super();
+    this.src = '';
+    this.autoplay = false;
+    this.loop = false;
+    this.muted = false;
+    this.controls = true;
+    this.caption = '';
+    this._lastPlaybackLogTime = 0;
+  }
+
   firstUpdated() {
-    try {
-      super.firstUpdated();
-      Logger.logEvent('PageFx.firstUpdated', { message: 'PageFx first updated' }, this.user_id);
-    } catch (error) {
-      ErrorHandler.handleError(error, this.user_id);
-    }
+    super.firstUpdated();
+    this._setupMediaEventListeners();
   }
 
   /**
-   * @protected
-   * @method render
-   * @description Renders the page layout.
-   * @return {import('lit').TemplateResult}
+   * @private
+   * @method _setupMediaEventListeners
+   * @description Sets up event listeners for media-specific events and tracks playback progress.
    */
-  render() {
+  _setupMediaEventListeners() {
     try {
-      Logger.logEvent('PageFx.render', {}, this.user_id);
-      const bgImageStyle = this.headerSrc ? `background-image: url(${this.headerSrc});` : '';
-      const containerStyle = `
-        max-width: ${this.styleWidth};
-        margin: ${this.styleMargin};
-        padding: ${this.stylePadding};
-        border: ${this.styleBorder};
-        box-shadow: ${this.styleShadow};
-        background: ${this.styleBgGradient || this.styleBgColor};
-        font-family: ${this.styleFont};
-        font-size: ${this.styleFontSize};
-        font-weight: ${this.styleFontWeight};
-        color: ${this.styleColor};
-        height: 100%;
-      `;
-      const headerStyle = `
-        width: 100%;
-        height: 280px;
-        ${bgImageStyle}
-        background-size: contain;
-        background-position: center;
-      `;
-      const iconStyle = `
-        width: 50px;
-        height: 50px;
-        display: inline-block;
-        vertical-align: middle;
-        background-image: url(${this.iconSrc});
-        background-size: cover;
-        background-position: center;
-      `;
-      const topbar = `
-        position: fixed;
-        background-color: #191919;
-        display: inline-block;
-        width: 100%;
-        color: #FFF;
-        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-      `;
-      const h1Style = `
-        margin-top: 0px;
-        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-        color: #FFF;
+      const mediaElement = this.shadowRoot.querySelector('video, audio');
+      if (!mediaElement) return;
 
-      `;
-      return html`
-        <div class="topbar" style="${topbar}">
-            <span class="topbar-icon icon" style="${iconStyle}">
-            </span>${this.title}</span>
-        </div>
-        <div class="header" style="${headerStyle}"></div>
-        <div class="content-container" style="${containerStyle}">
-            <h1 style="${h1Style}"><span class="icon" style="${iconStyle}"></span> ${this.title}</h1>
-            <slot></slot>
-        </div>
-      `;
-    } catch (error) {
-      ErrorHandler.handleError(error, this.user_id);
-      return html``;
-    }
-  }
+      // List of media-specific events to track
+      const events = [
+        'play', 'pause', 'ended', 'volumechange',
+        'seeked', 'seeking', 'loadeddata', 'loadedmetadata',
+      ];
 
-  /**
-   * @static
-   * @method styles
-   * @description Component's scoped styles.
-   * @return {import('lit').CSSResult}
-   */
-  static get styles() {
-    return css`
-      :host {
-        display: block;
-        height: 100%;
-      }
-      .header {
-        display: block;
-      }
-      .content-container {
-        position: relative;
-      }
-      h1 {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .icon {
-        background-repeat: no-repeat;
-      }
-    `;
-  }
-}
+      events.forEach((eventName) => {
+        mediaElement.addEventListener(eventName, (e) =>
+          this._logEvent(eventName, { currentTime: mediaElement.currentTime })
+        );
+      });
 
-customElements.define('page-fx', PageFx);
-
-```
-
-## File: src/fx/lit/text-fx.js
-```js
-// File: src/fx/lit/text-fx.js
-
-import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { html, css } from 'lit';
-
-/**
- * @class TextFx
- * @classdesc Renders Markdown to HTML using the Marked library.
- */
-export class TextFx extends BaseComponent {
-  static get properties() {
-    return {
-      ...super.properties,
-      markdown: { type: String, reflect: true }, // Input Markdown
-    };
-  }
-
-  constructor() {
-    super();
-    this.markdown = '';
-  }
-
-  render() {
-    // Use the global `marked` object loaded via CDN
-    const htmlContent = window.marked ? window.marked(this.markdown || '') : '';
-    return html`<div class="markdown" .innerHTML=${htmlContent}></div>`;
-  }
-
-  static get styles() {
-    return [
-      super.styles,
-      css`
-        .markdown {
-          font-family: Arial, sans-serif;
-          line-height: 1.5;
+      // Debounced logging for every second of playback
+      const logPlayback = debounce(() => {
+        const now = Math.floor(mediaElement.currentTime);
+        if (now !== this._lastPlaybackLogTime) {
+          this._lastPlaybackLogTime = now;
+          this._logEvent('playback-second', { currentTime: now });
         }
-      `,
-    ];
-  }
-}
+      }, 1000);
 
-customElements.define('text-fx', TextFx);
-
-```
-
-## File: src/fx/lit/section-fx.js
-```js
-// Example: File: src/fx/lit/section-fx.js
-
-import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { html } from 'lit';
-
-/**
- * @class SectionFx
- * @classdesc A section container extending BaseComponent.
- */
-export class SectionFx extends BaseComponent {
-  render() {
-    return html`<section><slot></slot></section>`;
-  }
-}
-
-customElements.define('section-fx', SectionFx);
-
-```
-
-## File: src/fx/lit/row-fx.js
-```js
-// File: src/fx/lit/row-fx.js
-
-import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { html, css } from 'lit';
-
-/**
- * @class RowFx
- * @classdesc A grid-based row container with a configurable number of columns.
- */
-export class RowFx extends BaseComponent {
-  static get properties() {
-    return {
-      ...super.properties,
-      columns: { type: Number, reflect: true }, // Number of columns
-    };
+      mediaElement.addEventListener('timeupdate', logPlayback);
+    } catch (error) {
+      console.error('Error setting up media event listeners:', error);
+    }
   }
 
-  constructor() {
-    super();
-    this.columns = 3; // Default number of columns
-  }
-
-  render() {
-    const slots = Array.from({ length: this.columns }, (_, i) => html`<slot name="col-${i + 1}"></slot>`);
-
+  /**
+   * Renders the media element.
+   * @param {string} tagName - The tag name (e.g., 'audio', 'video') for the media element.
+   * @returns {import('lit').TemplateResult}
+   */
+  renderMediaElement(tagName) {
     return html`
-      <div class="row">
-        ${slots}
+      <div class="media">
+        <${tagName}
+          .src=${this.src}
+          ?autoplay=${this.autoplay}
+          ?loop=${this.loop}
+          ?muted=${this.muted}
+          ?controls=${this.controls}
+        ></${tagName}>
+        ${this.caption ? html`<div class="caption">${this.caption}</div>` : ''}
       </div>
     `;
   }
@@ -596,244 +448,14 @@ export class RowFx extends BaseComponent {
     return [
       super.styles,
       css`
-        :host {
+        .media {
           display: block;
           width: 100%;
         }
-        .row {
-          display: grid;
-          gap: 16px;
-          grid-template-columns: repeat(var(--columns, 3), 1fr);
-        }
-      `,
-    ];
-  }
-
-  firstUpdated() {
-    super.firstUpdated();
-    this.style.setProperty('--columns', this.columns);
-  }
-}
-
-customElements.define('row-fx', RowFx);
-
-```
-
-## File: src/fx/lit/heading-fx.js
-```js
-import { BaseComponent } from './BaseComponent.js';
-import { html, css } from 'lit';
-
-/**
- * @class HeadingFx
- * @classdesc A heading component with configurable size, margins, and inherited color.
- */
-export class HeadingFx extends BaseComponent {
-  static get properties() {
-    return {
-      ...super.properties,
-      size: { type: Number, reflect: true },
-      marginTop: { type: String, attribute: 'margin-top', reflect: true },
-      marginBottom: { type: String, attribute: 'margin-bottom', reflect: true },
-    };
-  }
-
-  constructor() {
-    super();
-    this.size = 1;
-    this.marginTop = '0px';
-    this.marginBottom = '0px';
-  }
-
-  render() {
-    const headingTag = `h${Math.min(Math.max(this.size, 1), 6)}`;
-    return html`
-      <${headingTag}
-        class="heading"
-        style="
-          margin-top: ${this.marginTop};
-          margin-bottom: ${this.marginBottom};
-          color: ${this.styleColor || 'inherit'};
-        "
-      >
-        <slot></slot>
-      </${headingTag}>
-    `;
-  }
-
-  static get styles() {
-    return css`
-      :host {
-        display: block;
-      }
-      .heading {
-        font-family: inherit;
-        font-weight: inherit;
-      }
-    `;
-  }
-}
-
-customElements.define('heading-fx', HeadingFx);
-
-```
-
-## File: src/fx/lit/link-fx.js
-```js
-// File: src/fx/lit/link-fx.js
-
-import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { html, css } from 'lit';
-
-/**
- * @class LinkFx
- * @classdesc A customizable link component with dynamic styling.
- */
-export class LinkFx extends BaseComponent {
-  static get properties() {
-    return {
-      ...super.properties,
-      href: { type: String, reflect: true },
-      target: { type: String, reflect: true }, // e.g., _blank, _self
-      text: { type: String, reflect: true },
-    };
-  }
-
-  constructor() {
-    super();
-    this.href = '#';
-    this.target = '_self';
-    this.text = 'Click here';
-  }
-
-  render() {
-    return html`
-      <a class="link" href="${this.href}" target="${this.target}">
-        <slot>${this.text}</slot>
-      </a>
-    `;
-  }
-
-  static get styles() {
-    return [
-      super.styles,
-      css`
-        .link {
-          color: var(--style-color, #0077cc);
-          text-decoration: none;
-          font-size: var(--style-font-size, 1rem);
-          font-family: var(--style-font, inherit);
-          font-weight: var(--style-font-weight, normal);
-          transition: color 0.3s ease;
-        }
-
-        .link:hover {
-          color: var(--style-hover-color, #005fa3);
-          text-decoration: underline;
-        }
-      `,
-    ];
-  }
-}
-
-customElements.define('link-fx', LinkFx);
-
-```
-
-## File: src/fx/lit/audio-fx.js
-```js
-// File: src/fx/lit/audio-fx.js
-
-import { MediaComponent } from '@fx/lit/MediaComponent.js';
-
-/**
- * @class AudioFx
- * @classdesc A custom audio player extending MediaComponent.
- */
-export class AudioFx extends MediaComponent {
-  render() {
-    return this.renderMediaElement('audio');
-  }
-}
-
-customElements.define('audio-fx', AudioFx);
-
-```
-
-## File: src/fx/lit/video-fx.js
-```js
-// File: src/fx/lit/video-fx.js
-
-import { MediaComponent } from '@fx/lit/MediaComponent.js';
-
-/**
- * @class VideoFx
- * @classdesc A custom video player with enhanced tracking and captions.
- */
-export class VideoFx extends MediaComponent {
-  render() {
-    return this.renderMediaElement('video');
-  }
-}
-
-customElements.define('video-fx', VideoFx);
-
-```
-
-## File: src/fx/lit/image-fx.js
-```js
-// File: src/fx/lit/image-fx.js
-
-import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { html, css } from 'lit';
-
-/**
- * @class ImageFx
- * @classdesc A responsive image component with optional caption support.
- */
-export class ImageFx extends BaseComponent {
-  static get properties() {
-    return {
-      ...super.properties,
-      src: { type: String, reflect: true },
-      alt: { type: String, reflect: true },
-      caption: { type: String, reflect: true },
-    };
-  }
-
-  constructor() {
-    super();
-    this.src = '';
-    this.alt = 'Image';
-    this.caption = '';
-  }
-
-  render() {
-    return html`
-      <figure class="image-container">
-        <img src="${this.src}" alt="${this.alt}" />
-        ${this.caption ? html`<figcaption>${this.caption}</figcaption>` : ''}
-      </figure>
-    `;
-  }
-
-  static get styles() {
-    return [
-      super.styles,
-      css`
-        .image-container {
-          margin: 0;
+        .caption {
+          font-size: 14px;
           text-align: center;
-        }
-        img {
-          max-width: 100%;
-          height: auto;
-          display: block;
-          margin: 0 auto;
-        }
-        figcaption {
-          font-size: 0.9rem;
-          color: var(--style-color, #555);
+          color: gray;
           margin-top: 8px;
         }
       `,
@@ -841,7 +463,7 @@ export class ImageFx extends BaseComponent {
   }
 }
 
-customElements.define('image-fx', ImageFx);
+customElements.define('media-component', MediaComponent);
 
 ```
 
@@ -1258,128 +880,104 @@ customElements.define('base-component', BaseComponent);
 
 ```
 
-## File: src/fx/lit/MediaComponent.js
+## File: src/fx/lit/forms/input-fx.js
 ```js
-// File: src/fx/lit/media-component.js
+class InputField extends LitElement {
+    static get properties() {
+        return {
+            label: { type: String },
+            type: { type: String },
+            name: { type: String },
+            value: { type: String },
+            error: { type: String },
+            required: { type: Boolean },
+        };
+    }
 
-import { BaseComponent } from '@fx/lit/BaseComponent.js';
-import { html, css } from 'lit';
-import { debounce } from '@fx/utils/debounce.js';
+    constructor() {
+        super();
+        this.label = '';
+        this.type = 'text';
+        this.name = '';
+        this.value = '';
+        this.error = '';
+        this.required = false;
+    }
+
+    render() {
+        return html`
+            <div class="input-field">
+                <label>${this.label}</label>
+                <input type="${this.type}" name="${this.name}" .value=${this.value} @input=${this.handleInput} />
+                ${this.error ? html`<div class="error">${this.error}</div>` : ''}
+            </div>
+        `;
+    }
+
+    handleInput(e) {
+        this.value = e.target.value;
+        this.validate();
+    }
+
+    validate() {
+        if (this.required && !this.value) {
+            this.error = `${this.label} is required.`;
+        } else {
+            this.error = '';
+        }
+        this.dispatchEvent(new CustomEvent('value-changed', {
+            detail: { value: this.value, name: this.name, error: this.error },
+        }));
+    }
+
+    static get styles() {
+        return css`
+            .input-field {
+                margin: 10px 0;
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+                color: #fff;
+            }
+            input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            .error {
+                color: #e57373;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+        `;
+    }
+}
+customElements.define('input-field', InputField);
+```
+
+## File: src/fx/lit/sync/audio-fx.js
+```js
+// File: src/fx/lit/audio-fx.js
+
+import { MediaComponent } from '@fx/lit/MediaComponent.js';
 
 /**
- * @class MediaComponent
- * @classdesc Base class for media components like AudioFx and VideoFx with detailed event tracking.
+ * @class AudioFx
+ * @classdesc A custom audio player extending MediaComponent.
  */
-export class MediaComponent extends BaseComponent {
-  static get properties() {
-    return {
-      ...super.properties,
-      src: { type: String, reflect: true },
-      autoplay: { type: Boolean, reflect: true },
-      loop: { type: Boolean, reflect: true },
-      muted: { type: Boolean, reflect: true },
-      controls: { type: Boolean, reflect: true },
-      caption: { type: String, reflect: true }, // Media caption
-    };
-  }
-
-  constructor() {
-    super();
-    this.src = '';
-    this.autoplay = false;
-    this.loop = false;
-    this.muted = false;
-    this.controls = true;
-    this.caption = '';
-    this._lastPlaybackLogTime = 0;
-  }
-
-  firstUpdated() {
-    super.firstUpdated();
-    this._setupMediaEventListeners();
-  }
-
-  /**
-   * @private
-   * @method _setupMediaEventListeners
-   * @description Sets up event listeners for media-specific events and tracks playback progress.
-   */
-  _setupMediaEventListeners() {
-    try {
-      const mediaElement = this.shadowRoot.querySelector('video, audio');
-      if (!mediaElement) return;
-
-      // List of media-specific events to track
-      const events = [
-        'play', 'pause', 'ended', 'volumechange',
-        'seeked', 'seeking', 'loadeddata', 'loadedmetadata',
-      ];
-
-      events.forEach((eventName) => {
-        mediaElement.addEventListener(eventName, (e) =>
-          this._logEvent(eventName, { currentTime: mediaElement.currentTime })
-        );
-      });
-
-      // Debounced logging for every second of playback
-      const logPlayback = debounce(() => {
-        const now = Math.floor(mediaElement.currentTime);
-        if (now !== this._lastPlaybackLogTime) {
-          this._lastPlaybackLogTime = now;
-          this._logEvent('playback-second', { currentTime: now });
-        }
-      }, 1000);
-
-      mediaElement.addEventListener('timeupdate', logPlayback);
-    } catch (error) {
-      console.error('Error setting up media event listeners:', error);
-    }
-  }
-
-  /**
-   * Renders the media element.
-   * @param {string} tagName - The tag name (e.g., 'audio', 'video') for the media element.
-   * @returns {import('lit').TemplateResult}
-   */
-  renderMediaElement(tagName) {
-    return html`
-      <div class="media">
-        <${tagName}
-          .src=${this.src}
-          ?autoplay=${this.autoplay}
-          ?loop=${this.loop}
-          ?muted=${this.muted}
-          ?controls=${this.controls}
-        ></${tagName}>
-        ${this.caption ? html`<div class="caption">${this.caption}</div>` : ''}
-      </div>
-    `;
-  }
-
-  static get styles() {
-    return [
-      super.styles,
-      css`
-        .media {
-          display: block;
-          width: 100%;
-        }
-        .caption {
-          font-size: 14px;
-          text-align: center;
-          color: gray;
-          margin-top: 8px;
-        }
-      `,
-    ];
+export class AudioFx extends MediaComponent {
+  render() {
+    return this.renderMediaElement('audio');
   }
 }
 
-customElements.define('media-component', MediaComponent);
+customElements.define('audio-fx', AudioFx);
 
 ```
 
-## File: src/fx/lit/col-fx.js
+## File: src/fx/lit/sync/col-fx.js
 ```js
 // File: src/fx/lit/col-fx.js
 
@@ -1435,6 +1033,528 @@ export class ColFx extends BaseComponent {
 
 customElements.define('col-fx', ColFx);
 
+```
+
+## File: src/fx/lit/sync/heading-fx.js
+```js
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class HeadingFx
+ * @classdesc A heading component with configurable size, margins, and inherited color.
+ */
+export class HeadingFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      size: { type: Number, reflect: true },
+      marginTop: { type: String, attribute: 'margin-top', reflect: true },
+      marginBottom: { type: String, attribute: 'margin-bottom', reflect: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this.size = 1;
+    this.marginTop = '0px';
+    this.marginBottom = '0px';
+  }
+
+  render() {
+    const headingTag = `h${Math.min(Math.max(this.size, 1), 6)}`;
+    return html`
+      <${headingTag}
+        class="heading"
+        style="
+          margin-top: ${this.marginTop};
+          margin-bottom: ${this.marginBottom};
+          color: ${this.styleColor || 'inherit'};
+        "
+      >
+        <slot></slot>
+      </${headingTag}>
+    `;
+  }
+
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+      }
+      .heading {
+        font-family: inherit;
+        font-weight: inherit;
+      }
+    `;
+  }
+}
+
+customElements.define('heading-fx', HeadingFx);
+
+```
+
+## File: src/fx/lit/sync/image-fx.js
+```js
+// File: src/fx/lit/image-fx.js
+
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class ImageFx
+ * @classdesc A responsive image component with optional caption support.
+ */
+export class ImageFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      src: { type: String, reflect: true },
+      alt: { type: String, reflect: true },
+      caption: { type: String, reflect: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this.src = '';
+    this.alt = 'Image';
+    this.caption = '';
+  }
+
+  render() {
+    return html`
+      <figure class="image-container">
+        <img src="${this.src}" alt="${this.alt}" />
+        ${this.caption ? html`<figcaption>${this.caption}</figcaption>` : ''}
+      </figure>
+    `;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        .image-container {
+          margin: 0;
+          text-align: center;
+        }
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+        figcaption {
+          font-size: 0.9rem;
+          color: var(--style-color, #555);
+          margin-top: 8px;
+        }
+      `,
+    ];
+  }
+}
+
+customElements.define('image-fx', ImageFx);
+
+```
+
+## File: src/fx/lit/sync/link-fx.js
+```js
+// File: src/fx/lit/link-fx.js
+
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class LinkFx
+ * @classdesc A customizable link component with dynamic styling.
+ */
+export class LinkFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      href: { type: String, reflect: true },
+      target: { type: String, reflect: true }, // e.g., _blank, _self
+      text: { type: String, reflect: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this.href = '#';
+    this.target = '_self';
+    this.text = 'Click here';
+  }
+
+  render() {
+    return html`
+      <a class="link" href="${this.href}" target="${this.target}">
+        <slot>${this.text}</slot>
+      </a>
+    `;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        .link {
+          color: var(--style-color, #0077cc);
+          text-decoration: none;
+          font-size: var(--style-font-size, 1rem);
+          font-family: var(--style-font, inherit);
+          font-weight: var(--style-font-weight, normal);
+          transition: color 0.3s ease;
+        }
+
+        .link:hover {
+          color: var(--style-hover-color, #005fa3);
+          text-decoration: underline;
+        }
+      `,
+    ];
+  }
+}
+
+customElements.define('link-fx', LinkFx);
+
+```
+
+## File: src/fx/lit/sync/page-fx.js
+```js
+/** 
+ * /src/fx/components/page-fx.js
+ * @file page-fx.js - The PageFx component extending BaseComponent.
+ */
+
+import { html, css } from 'lit';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { Logger } from '@fx/utils/Logger.js';
+import { ErrorHandler } from '@fx/utils/ErrorHandler.js';
+
+/**
+ * @class PageFx
+ * @classdesc A LitElement web component representing a page with a header image and icon similar to Notion.
+ * Extends BaseComponent to leverage event tracking and attribute management.
+ */
+export class PageFx extends BaseComponent {
+  constructor() {
+    super();
+    try {
+      Logger.logEvent('PageFx.constructor', { message: 'PageFx constructed' }, this.user_id);
+    } catch (error) {
+      ErrorHandler.handleError(error, this.user_id);
+    }
+  }
+
+  /**
+   * @protected
+   * @method firstUpdated
+   * @description Called once the element’s DOM is updated. Additional setup for PageFx.
+   * @return {void}
+   */
+  firstUpdated() {
+    try {
+      super.firstUpdated();
+      Logger.logEvent('PageFx.firstUpdated', { message: 'PageFx first updated' }, this.user_id);
+    } catch (error) {
+      ErrorHandler.handleError(error, this.user_id);
+    }
+  }
+
+  /**
+   * @protected
+   * @method render
+   * @description Renders the page layout.
+   * @return {import('lit').TemplateResult}
+   */
+  render() {
+    try {
+      Logger.logEvent('PageFx.render', {}, this.user_id);
+      const bgImageStyle = this.headerSrc ? `background-image: url(${this.headerSrc});` : '';
+      const containerStyle = `
+        max-width: ${this.styleWidth};
+        margin: ${this.styleMargin};
+        padding: ${this.stylePadding};
+        border: ${this.styleBorder};
+        box-shadow: ${this.styleShadow};
+        background: ${this.styleBgGradient || this.styleBgColor};
+        font-family: ${this.styleFont};
+        font-size: ${this.styleFontSize};
+        font-weight: ${this.styleFontWeight};
+        color: ${this.styleColor};
+        height: 100%;
+      `;
+      const headerStyle = `
+        width: 100%;
+        height: 280px;
+        ${bgImageStyle}
+        background-size: contain;
+        background-position: center;
+      `;
+      const iconStyle = `
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+        vertical-align: middle;
+        background-image: url(${this.iconSrc});
+        background-size: cover;
+        background-position: center;
+      `;
+      const topbar = `
+        position: fixed;
+        background-color: #191919;
+        display: inline-block;
+        width: 100%;
+        color: #FFF;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      `;
+      const h1Style = `
+        margin-top: 0px;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+        color: #FFF;
+
+      `;
+      return html`
+        <div class="topbar" style="${topbar}">
+            <span class="topbar-icon icon" style="${iconStyle}">
+            </span>${this.title}</span>
+        </div>
+        <div class="header" style="${headerStyle}"></div>
+        <div class="content-container" style="${containerStyle}">
+            <h1 style="${h1Style}"><span class="icon" style="${iconStyle}"></span> ${this.title}</h1>
+            <slot></slot>
+        </div>
+      `;
+    } catch (error) {
+      ErrorHandler.handleError(error, this.user_id);
+      return html``;
+    }
+  }
+
+  /**
+   * @static
+   * @method styles
+   * @description Component's scoped styles.
+   * @return {import('lit').CSSResult}
+   */
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+        height: 100%;
+      }
+      .header {
+        display: block;
+      }
+      .content-container {
+        position: relative;
+      }
+      h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .icon {
+        background-repeat: no-repeat;
+      }
+    `;
+  }
+}
+
+customElements.define('page-fx', PageFx);
+
+```
+
+## File: src/fx/lit/sync/row-fx.js
+```js
+// File: src/fx/lit/row-fx.js
+
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class RowFx
+ * @classdesc A grid-based row container with a configurable number of columns.
+ */
+export class RowFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      columns: { type: Number, reflect: true }, // Number of columns
+    };
+  }
+
+  constructor() {
+    super();
+    this.columns = 3; // Default number of columns
+  }
+
+  render() {
+    const slots = Array.from({ length: this.columns }, (_, i) => html`<slot name="col-${i + 1}"></slot>`);
+
+    return html`
+      <div class="row">
+        ${slots}
+      </div>
+    `;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        :host {
+          display: block;
+          width: 100%;
+        }
+        .row {
+          display: grid;
+          gap: 16px;
+          grid-template-columns: repeat(var(--columns, 3), 1fr);
+        }
+      `,
+    ];
+  }
+
+  firstUpdated() {
+    super.firstUpdated();
+    this.style.setProperty('--columns', this.columns);
+  }
+}
+
+customElements.define('row-fx', RowFx);
+
+```
+
+## File: src/fx/lit/sync/section-fx.js
+```js
+// Example: File: src/fx/lit/section-fx.js
+
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html } from 'lit';
+
+/**
+ * @class SectionFx
+ * @classdesc A section container extending BaseComponent.
+ */
+export class SectionFx extends BaseComponent {
+  render() {
+    return html`<section><slot></slot></section>`;
+  }
+}
+
+customElements.define('section-fx', SectionFx);
+
+```
+
+## File: src/fx/lit/sync/text-fx.js
+```js
+// File: src/fx/lit/text-fx.js
+
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class TextFx
+ * @classdesc Renders Markdown to HTML using the Marked library.
+ */
+export class TextFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      markdown: { type: String, reflect: true }, // Input Markdown
+    };
+  }
+
+  constructor() {
+    super();
+    this.markdown = '';
+  }
+
+  render() {
+    // Use the global `marked` object loaded via CDN
+    const htmlContent = window.marked ? window.marked(this.markdown || '') : '';
+    return html`<div class="markdown" .innerHTML=${htmlContent}></div>`;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        .markdown {
+          font-family: Arial, sans-serif;
+          line-height: 1.5;
+        }
+      `,
+    ];
+  }
+}
+
+customElements.define('text-fx', TextFx);
+
+```
+
+## File: src/fx/lit/sync/video-fx.js
+```js
+// File: src/fx/lit/video-fx.js
+
+import { MediaComponent } from '@fx/lit/MediaComponent.js';
+
+/**
+ * @class VideoFx
+ * @classdesc A custom video player with enhanced tracking and captions.
+ */
+export class VideoFx extends MediaComponent {
+  render() {
+    return this.renderMediaElement('video');
+  }
+}
+
+customElements.define('video-fx', VideoFx);
+
+```
+
+## File: src/fx/lit/ui/panel-fx.js
+```js
+class PanelComponent extends LitElement {
+    static get properties() {
+        return {
+            title: { type: String },
+        };
+    }
+
+    constructor() {
+        super();
+        this.title = '';
+    }
+
+    render() {
+        return html`
+            <div class="panel">
+                <h2>${this.title}</h2>
+                <slot></slot>
+            </div>
+        `;
+    }
+
+    static get styles() {
+        return css`
+            .panel {
+                background: #333;
+                color: #fff;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 10px 0;
+            }
+            h2 {
+                margin-top: 0;
+            }
+        `;
+    }
+}
+customElements.define('panel-component', PanelComponent);
 ```
 
 

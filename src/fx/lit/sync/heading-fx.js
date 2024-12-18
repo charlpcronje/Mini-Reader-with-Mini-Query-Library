@@ -1,4 +1,4 @@
-import { BaseComponent } from './BaseComponent.js';
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';
 
 /**
