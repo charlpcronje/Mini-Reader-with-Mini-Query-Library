@@ -1,8 +1,8 @@
 // /src/factory.js
 import '@fx/FX.js';
 import "@fx/DOM.js";
-import { DOM } from './DOM.js';
-import { FX, fx } from './FX.js';
+import { DOM } from '@fx/DOM.js';
+import { FX, fx } from '@fx/FX.js';
 
 import { AudioFx } from "@fx/lit/audio-fx.js";
 import { PageFx } from "@fx/lit/page-fx.js";
