@@ -10,7 +10,20 @@
 </head>
 <body>
     <page-fx name="page" title="Home" header-src="assets/img/headers/hello.png" style-bg-color="#121212" style-padding="40px 0px 0px 0px">
-        Hello
+        <section-fx>
+            <row-fx columns="3">
+                <col-fx slot="col-1" span="2">Content for column 1 (spanning 2 columns)</col-fx>
+                <col-fx slot="col-2">
+                    <link-fx href="https://example.com" target="_blank" text="Visit Example"></link-fx>
+
+                    <!-- With custom content -->
+                    <link-fx href="https://example.com" target="_blank">
+                        <strong>Custom Link Content</strong>
+                    </link-fx>
+                </col-fx>
+                <col-fx slot="col-3">Content for column 3</col-fx>
+            </row-fx>
+        </section-fx>
     </page-fx>
 
     <slot name="body">test</slot>

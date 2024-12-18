@@ -18,6 +18,7 @@
         "src/fx/utils"
     ],
     "exclude_files": [
+        "src/fx/boot.js",
         "src/api/tsconfig.json",
         "src/api/getUsers.json",
         "combined.md",

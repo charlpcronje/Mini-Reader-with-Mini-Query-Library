@@ -5,18 +5,17 @@ This document contains an analysis of the project files.
 | No.   | File                                 | Lines    | Words    | AI Tokens |
 | ----- | ------------------------------------ | -------- | -------- | --------- |
 |  1    | ./src/env.js                         | 15       | 39       | 53        |
-|  2    | ./src/app/index.html                 | 18       | 38       | 134       |
-|  3    | ./src/app/app.js                     | 2        | 2        | 6         |
+|  2    | ./src/app/index.html                 | 31       | 76       | 250       |
+|  3    | ./src/app/app.js                     | 3        | 7        | 26        |
 |  4    | ./src/app/assets/css/styles.css      | 5        | 10       | 19        |
 |  5    | ./src/app/layouts/main.html          | 13       | 19       | 57        |
-|  6    | ./src/fx/boot.js                     | 13       | 58       | 104       |
-|       | Total                                | 66       | 166      | 373       |
+|       | Total                                | 67       | 151      | 405       |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 66
-- Total Words: 166
-- Total AI Tokens: 373
+- Total Lines: 67
+- Total Words: 151
+- Total AI Tokens: 405
 
 ## File: src/env.js
 ```js
@@ -51,7 +50,20 @@ export { env };
 </head>
 <body>
     <page-fx name="page" title="Home" header-src="assets/img/headers/hello.png" style-bg-color="#121212" style-padding="40px 0px 0px 0px">
-        Hello
+        <section-fx>
+            <row-fx columns="3">
+                <col-fx slot="col-1" span="2">Content for column 1 (spanning 2 columns)</col-fx>
+                <col-fx slot="col-2">
+                    <link-fx href="https://example.com" target="_blank" text="Visit Example"></link-fx>
+
+                    <!-- With custom content -->
+                    <link-fx href="https://example.com" target="_blank">
+                        <strong>Custom Link Content</strong>
+                    </link-fx>
+                </col-fx>
+                <col-fx slot="col-3">Content for column 3</col-fx>
+            </row-fx>
+        </section-fx>
     </page-fx>
 
     <slot name="body">test</slot>
@@ -61,8 +73,9 @@ export { env };
 
 ## File: src/app/app.js
 ```js
-import "@fx/boot.js";
+import { $ } from "@fx/boot.js";
 
+console.log($("path.to.dyn.object").val("hello"));
 ```
 
 ## File: src/app/assets/css/styles.css
@@ -89,23 +102,6 @@ html, body {
     </footer>
 </div>
 
-```
-
-## File: src/fx/boot.js
-```js
-import '@fx/FX.js';
-import "@fx/DOM.js";
-
-
-import { AudioFx } from "@fx/lit/audio-fx.js";
-import { PageFx } from "@fx/lit/page-fx.js";
-import { ColumnFx } from "@fx/lit/column-fx.js";
-import { SectionFx } from "@fx/lit/section-fx.js";
-import { TextFx } from "@fx/lit/text-fx.js";
-import { HeadingFx } from "@fx/lit/heading-fx.js";
-import { ImageFx } from "@fx/lit/image-fx.js?test";
-import { LinkFx } from "@fx/lit/link-fx.js";
-import { VideoFx } from "@fx/lit/video-fx.js";
 ```
 
 

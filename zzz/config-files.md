@@ -7,18 +7,18 @@ This document contains an analysis of the project files.
 |  1    | ./package.json                       | 20       | 37       | 114       |
 |  2    | ./.env                               | 5        | 3        | 10        |
 |  3    | ./vite.config.js                     | 44       | 164      | 318       |
-|  4    | ./.gitignore                         | 7        | 7        | 7         |
+|  4    | ./.gitignore                         | 8        | 8        | 8         |
 |  5    | ./jest.config.js                     | 16       | 28       | 78        |
 |  6    | ./.babelrc                           | 4        | 4        | 12        |
 |  7    | ./src/env.js                         | 15       | 39       | 53        |
 |  8    | ./.idea/.gitignore                   | 9        | 20       | 20        |
-|       | Total                                | 120      | 302      | 612       |
+|       | Total                                | 121      | 303      | 613       |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 120
-- Total Words: 302
-- Total AI Tokens: 612
+- Total Lines: 121
+- Total Words: 303
+- Total AI Tokens: 613
 
 ## File: package.json
 ```json
@@ -110,6 +110,7 @@ backups.zip
 backups
 .env
 logs
+.idea
 ```
 
 ## File: jest.config.js

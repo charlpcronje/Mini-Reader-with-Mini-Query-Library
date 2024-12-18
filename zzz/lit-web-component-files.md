@@ -13,21 +13,21 @@ This document contains an analysis of the project files.
 |  7    | ./src/fx/lit/text-fx.js              | 43       | 111      | 182       |
 |  8    | ./src/fx/lit/section-fx.js           | 17       | 42       | 79        |
 |  9    | ./src/fx/lit/row-fx.js               | 57       | 133      | 248       |
-|  10   | ./src/fx/lit/column-fx.js            | 11       | 23       | 45        |
-|  11   | ./src/fx/lit/heading-fx.js           | 12       | 23       | 45        |
-|  12   | ./src/fx/lit/link-fx.js              | 12       | 23       | 45        |
-|  13   | ./src/fx/lit/audio-fx.js             | 16       | 36       | 60        |
-|  14   | ./src/fx/lit/video-fx.js             | 16       | 39       | 63        |
-|  15   | ./src/fx/lit/image-fx.js             | 13       | 23       | 45        |
-|  16   | ./src/fx/lit/BaseComponent.js        | 409      | 1412     | 2602      |
-|  17   | ./src/fx/lit/MediaComponent.js       | 117      | 325      | 602       |
-|       | Total                                | 1160     | 3571     | 6556      |
+|  10   | ./src/fx/lit/heading-fx.js           | 55       | 133      | 253       |
+|  11   | ./src/fx/lit/link-fx.js              | 58       | 139      | 276       |
+|  12   | ./src/fx/lit/audio-fx.js             | 16       | 36       | 60        |
+|  13   | ./src/fx/lit/video-fx.js             | 16       | 39       | 63        |
+|  14   | ./src/fx/lit/image-fx.js             | 61       | 141      | 261       |
+|  15   | ./src/fx/lit/BaseComponent.js        | 409      | 1412     | 2602      |
+|  16   | ./src/fx/lit/MediaComponent.js       | 117      | 325      | 602       |
+|  17   | ./src/fx/lit/col-fx.js               | 54       | 121      | 206       |
+|       | Total                                | 1340     | 4013     | 7372      |
 
 
 ## Total Counts Across All Files. Tokenizer Used: NLTK's Punkt Tokenizer
-- Total Lines: 1160
-- Total Words: 3571
-- Total AI Tokens: 6556
+- Total Lines: 1340
+- Total Words: 4013
+- Total AI Tokens: 7372
 
 ## File: src/fx/utils/debounce.js
 ```js
@@ -619,31 +619,59 @@ customElements.define('row-fx', RowFx);
 
 ```
 
-## File: src/fx/lit/column-fx.js
-```js
-import {LitElement, html} from 'lit';
-
-export class ColumnFx extends LitElement {
-    render() {
-      return html`
-        <div>Hello from ColumnFx!</div>
-      `;
-    }
-}
-
-customElements.define('column-fx', ColumnFx);
-```
-
 ## File: src/fx/lit/heading-fx.js
 ```js
-import {LitElement, html} from 'lit';
+import { BaseComponent } from './BaseComponent.js';
+import { html, css } from 'lit';
 
-export class HeadingFx extends LitElement {
-    render() {
-      return html`
-        <div>Hello from HeadingFx!</div>
-      `;
-    }
+/**
+ * @class HeadingFx
+ * @classdesc A heading component with configurable size, margins, and inherited color.
+ */
+export class HeadingFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      size: { type: Number, reflect: true },
+      marginTop: { type: String, attribute: 'margin-top', reflect: true },
+      marginBottom: { type: String, attribute: 'margin-bottom', reflect: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this.size = 1;
+    this.marginTop = '0px';
+    this.marginBottom = '0px';
+  }
+
+  render() {
+    const headingTag = `h${Math.min(Math.max(this.size, 1), 6)}`;
+    return html`
+      <${headingTag}
+        class="heading"
+        style="
+          margin-top: ${this.marginTop};
+          margin-bottom: ${this.marginBottom};
+          color: ${this.styleColor || 'inherit'};
+        "
+      >
+        <slot></slot>
+      </${headingTag}>
+    `;
+  }
+
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+      }
+      .heading {
+        font-family: inherit;
+        font-weight: inherit;
+      }
+    `;
+  }
 }
 
 customElements.define('heading-fx', HeadingFx);
@@ -652,14 +680,60 @@ customElements.define('heading-fx', HeadingFx);
 
 ## File: src/fx/lit/link-fx.js
 ```js
-import {LitElement, html} from 'lit';
+// File: src/fx/lit/link-fx.js
 
-export class LinkFx extends LitElement {
-    render() {
-      return html`
-        <div>Hello from LinkFx!</div>
-      `;
-    }
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class LinkFx
+ * @classdesc A customizable link component with dynamic styling.
+ */
+export class LinkFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      href: { type: String, reflect: true },
+      target: { type: String, reflect: true }, // e.g., _blank, _self
+      text: { type: String, reflect: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this.href = '#';
+    this.target = '_self';
+    this.text = 'Click here';
+  }
+
+  render() {
+    return html`
+      <a class="link" href="${this.href}" target="${this.target}">
+        <slot>${this.text}</slot>
+      </a>
+    `;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        .link {
+          color: var(--style-color, #0077cc);
+          text-decoration: none;
+          font-size: var(--style-font-size, 1rem);
+          font-family: var(--style-font, inherit);
+          font-weight: var(--style-font-weight, normal);
+          transition: color 0.3s ease;
+        }
+
+        .link:hover {
+          color: var(--style-hover-color, #005fa3);
+          text-decoration: underline;
+        }
+      `,
+    ];
+  }
 }
 
 customElements.define('link-fx', LinkFx);
@@ -708,18 +782,66 @@ customElements.define('video-fx', VideoFx);
 
 ## File: src/fx/lit/image-fx.js
 ```js
-import {LitElement, html} from 'lit';
+// File: src/fx/lit/image-fx.js
 
-export class ImageFx extends LitElement {
-    render() {
-      return html`
-        <div>Hello from ImageFx!</div>
-      `;
-    }
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class ImageFx
+ * @classdesc A responsive image component with optional caption support.
+ */
+export class ImageFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      src: { type: String, reflect: true },
+      alt: { type: String, reflect: true },
+      caption: { type: String, reflect: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this.src = '';
+    this.alt = 'Image';
+    this.caption = '';
+  }
+
+  render() {
+    return html`
+      <figure class="image-container">
+        <img src="${this.src}" alt="${this.alt}" />
+        ${this.caption ? html`<figcaption>${this.caption}</figcaption>` : ''}
+      </figure>
+    `;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        .image-container {
+          margin: 0;
+          text-align: center;
+        }
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+        figcaption {
+          font-size: 0.9rem;
+          color: var(--style-color, #555);
+          margin-top: 8px;
+        }
+      `,
+    ];
+  }
 }
 
 customElements.define('image-fx', ImageFx);
-
 
 ```
 
@@ -1254,6 +1376,64 @@ export class MediaComponent extends BaseComponent {
 }
 
 customElements.define('media-component', MediaComponent);
+
+```
+
+## File: src/fx/lit/col-fx.js
+```js
+// File: src/fx/lit/col-fx.js
+
+import { BaseComponent } from '@fx/lit/BaseComponent.js';
+import { html, css } from 'lit';
+
+/**
+ * @class ColFx
+ * @classdesc A column component designed to fit inside a RowFx grid.
+ */
+export class ColFx extends BaseComponent {
+  static get properties() {
+    return {
+      ...super.properties,
+      span: { type: Number, reflect: true }, // Number of grid columns to span
+    };
+  }
+
+  constructor() {
+    super();
+    this.span = 1; // Default span is 1 column
+  }
+
+  render() {
+    return html`
+      <div class="col">
+        <slot></slot>
+      </div>
+    `;
+  }
+
+  static get styles() {
+    return [
+      super.styles,
+      css`
+        :host {
+          display: block;
+          grid-column: span var(--span, 1);
+        }
+        .col {
+          padding: 8px;
+          box-sizing: border-box;
+        }
+      `,
+    ];
+  }
+
+  firstUpdated() {
+    super.firstUpdated();
+    this.style.setProperty('--span', this.span);
+  }
+}
+
+customElements.define('col-fx', ColFx);
 
 ```
 

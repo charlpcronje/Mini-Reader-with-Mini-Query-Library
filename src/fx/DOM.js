@@ -222,6 +222,5 @@ $.load = async (config) => {
             settings.always();
     }
 };
-window.$ = $;
 export { $, DOM };
 
