@@ -1,5 +1,5 @@
 /** 
- * src/app/utils/debounce.js
+ * src/fx/utils/debounce.js
  * @file debounce.js - A debounce utility function.
  */
 

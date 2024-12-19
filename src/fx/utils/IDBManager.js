@@ -1,5 +1,5 @@
 /** 
- * src/app/utils/IDBManager.js
+ * src/fx/utils/IDBManager.js
  * @file IDBManager.js - IndexedDB management utility.
  */
 

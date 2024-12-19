@@ -1,4 +1,4 @@
-// Example: File: src/fx/lit/section-fx.js
+// src/fx/lit/sync/section-fx.js
 
 import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html } from 'lit';

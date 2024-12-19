@@ -11,13 +11,14 @@
         "dist",
         "backups",
         "tests",
-        "src/fx/tests"
+        "src/fx/tests",
+        "zzz"
     ],
     "exclude_files": [
         "combined.md",
         "combine.json",
         "package-lock.json",
-        "src/fx/components/BaseComponent.js"
+        "comp.md"
     ],
     "file_types": [
         ".ts",

@@ -1,4 +1,4 @@
-// File: src/fx/lit/image-fx.js
+// src/fx/lit/sync/image-fx.js
 
 import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';

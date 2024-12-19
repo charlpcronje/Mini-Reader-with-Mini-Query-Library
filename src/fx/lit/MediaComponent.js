@@ -1,4 +1,4 @@
-// File: src/fx/lit/media-component.js
+// src/fx/lit/MediaComponent.js
 
 import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';

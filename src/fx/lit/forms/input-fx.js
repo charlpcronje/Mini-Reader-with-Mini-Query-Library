@@ -1,4 +1,4 @@
-class InputField extends LitElement {
+export class InputFx extends LitElement {
     static get properties() {
         return {
             label: { type: String },
@@ -70,4 +70,4 @@ class InputField extends LitElement {
         `;
     }
 }
-customElements.define('input-field', InputField);
+customElements.define('input-fx', InputFx);

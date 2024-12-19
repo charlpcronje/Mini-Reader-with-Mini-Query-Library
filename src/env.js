@@ -1,10 +1,11 @@
-// ./env.js
+// src/env.js
 
 // Define the environment configuration object
 const env = {
     APP_HOST: 'https://mini.reader.webally.co.za/',
     APP_PORT: 80,
-    STORAGE_KEY: 'mini-reader-storage'
+    STORAGE_KEY: 'mini-reader-storage',
+    CTRL_ERROR_KEY: 'e' 
 };
 
 // Freeze the object to prevent modifications

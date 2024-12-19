@@ -1,6 +1,7 @@
 import $ from "../scripts/Systemic.js";
 
 /**
+ * src/fx/tests/systemic.test.js
  * @fileoverview This file contains tests for the Systemic class,
  * which provides a dynamic object creation system with plugin support.
  */

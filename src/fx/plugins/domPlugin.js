@@ -1,3 +1,4 @@
+// src/fx/plugins/domPlugin.js
 import { $, DOM } from '../DOM.js';
 
 /**

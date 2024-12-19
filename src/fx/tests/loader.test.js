@@ -1,3 +1,8 @@
+/**
+ * src/fx/tests/loader.test.js
+ * Tests for the ComponentLoader functionality.
+ * Verifies that the ComponentLoader can load and render components, and handles invalid components gracefully.
+ */
 describe('ComponentLoader Tests', () => {
     beforeEach(() => {
         document.body.innerHTML = `

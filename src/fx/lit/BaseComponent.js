@@ -1,5 +1,5 @@
 /** 
- * /src/app/components/BaseComponent.js
+ * src/fx/lit/BaseComponent.js
  * @file BaseComponent.js - The base LitElement web component class with shared attributes and functionality.
  */
 

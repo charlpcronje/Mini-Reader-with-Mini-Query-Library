@@ -1,8 +1,11 @@
-// /src/factory.js
-import '@fx/FX.js';
-import "@fx/DOM.js";
+// src/fx/boot.js
 import { DOM } from '@fx/DOM.js';
 import { FX, fx } from '@fx/FX.js';
+
+/***  
+** Debug Components
+***/
+import { ErrorPanelFx } from "@fx/lit/debug/error-panel-fx.js";
 
 /***  
 ** Syncing Components
@@ -21,13 +24,13 @@ import { VideoFx } from "@fx/lit/sync/video-fx.js";
 /***  
 ** Form Components
 ***/
-import { VideoFx } from "@fx/lit/forms/input-fx.js";
+import { InputFx } from "@fx/lit/forms/input-fx.js";
 
 
 /***  
 ** UI Components
 ***/
-import { VideoFx } from "@fx/lit/ui/panel-fx.js";
+import { PanelFx } from "@fx/lit/ui/panel-fx.js";
 
 // Array of valid HTML tags for DOM element detection
 const HTML_TAGS = [
@@ -80,7 +83,7 @@ function $(selector) {
             return new DOM(selector); // Handle as DOM instance
         }
         // Otherwise, treat as FX path
-        return fx(selector);
+        return fx(selector,);
     }
 
     // If it's already a DOM object (Element/NodeList/Array), wrap in DOM

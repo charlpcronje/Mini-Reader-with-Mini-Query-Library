@@ -1,5 +1,5 @@
 /** 
- * src/app/utils/ErrorHandler.js
+ * src/fx/utils/ErrorHandler.js
  * @file ErrorHandler.js - A simple error handling utility.
  */
 

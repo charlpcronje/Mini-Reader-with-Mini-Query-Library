@@ -1,5 +1,5 @@
 /** 
- * /src/fx/components/page-fx.js
+ * src/fx/lit/sync/page-fx.js
  * @file page-fx.js - The PageFx component extending BaseComponent.
  */
 

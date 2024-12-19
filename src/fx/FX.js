@@ -30,11 +30,11 @@ class FX {
      * Returns the singleton FX instance, creating it if necessary.
      * @returns {FX} The FX singleton instance.
      */
-    static getInstance() {
+    static getInstance(path = null) {
         if (!FX.instance) {
             FX.instance = new FX();
         }
-        return FX.instance;
+        return FX.instance.resolvePath(path);
     }
 
     /**
@@ -274,7 +274,7 @@ class FX {
 
 
 const fx = function (path) {
-    return FX.getInstance().resolvePath(path);
+    return FX.getInstance(path);
 }
-
+window.fx = fx;
 export { FX, fx };

@@ -1,4 +1,4 @@
-// src/app/tests/main.js
+// src/fx/tests/main.js
 
 import { domTestGroup } from "./dom-tests.js";
 import { cssTestGroup } from ".//css-tests.js";

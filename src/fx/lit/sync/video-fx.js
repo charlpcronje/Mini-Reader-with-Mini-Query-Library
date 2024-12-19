@@ -1,4 +1,4 @@
-// File: src/fx/lit/video-fx.js
+// src/fx/lit/sync/video-fx.js
 
 import { MediaComponent } from '@fx/lit/MediaComponent.js';
 

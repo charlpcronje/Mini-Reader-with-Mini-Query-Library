@@ -1,5 +1,5 @@
 /** 
- * src/app/utils/Logger.js
+ * src/fx/utils/Logger.js
  * @file Logger.js - Logging utility class.
  */
 

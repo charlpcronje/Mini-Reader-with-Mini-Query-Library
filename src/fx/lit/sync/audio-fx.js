@@ -1,4 +1,4 @@
-// File: src/fx/lit/audio-fx.js
+// File: src/fx/lit/sync/audio-fx.js
 
 import { MediaComponent } from '@fx/lit/MediaComponent.js';
 

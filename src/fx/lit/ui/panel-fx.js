@@ -1,4 +1,6 @@
-class PanelComponent extends LitElement {
+// src/fx/lit/ui/panel-fx.js
+
+export class PanelFx extends LitElement {
     static get properties() {
         return {
             title: { type: String },
@@ -34,4 +36,4 @@ class PanelComponent extends LitElement {
         `;
     }
 }
-customElements.define('panel-component', PanelComponent);
+customElements.define('panel-fx', PanelFx);

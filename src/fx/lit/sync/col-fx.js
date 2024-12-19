@@ -1,4 +1,4 @@
-// File: src/fx/lit/col-fx.js
+// src/fx/lit/sync/col-fx.js
 
 import { BaseComponent } from '@fx/lit/BaseComponent.js';
 import { html, css } from 'lit';

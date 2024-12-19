@@ -1,5 +1,5 @@
 /** 
- * src/app/utils/localStorageManager.js
+ * src/fx/utils/localStorageManager.js
  * @file localStorageManager.js - Manage local storage for events.
  */
 import { env } from '@src/env.js';
