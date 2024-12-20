@@ -161,18 +161,18 @@ The panel uses a dark theme with color-coded logs:
 
 ### **Example Workflow**
 1. **Log an Error**
-```javascript
-BaseClass.error('Critical issue occurred!');
-```
+   ```javascript
+   BaseClass.error('Critical issue occurred!');
+   ```
 
 2. **View in Panel**
-Press `Ctrl + E` to open the error panel and review the log.
+   Press `Ctrl + E` to open the error panel and review the log.
 
 3. **Copy Logs**
-Use "Copy All" to copy visible logs or "Copy Last" for the latest entry.
+   Use "Copy All" to copy visible logs or "Copy Last" for the latest entry.
 
 4. **View Details**
-Double-click a log to view detailed information in the "Details" tab.
+   Double-click a log to view detailed information in the "Details" tab.
 
 ---
 

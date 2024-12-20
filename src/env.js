@@ -5,7 +5,11 @@ const env = {
     APP_HOST: 'https://mini.reader.webally.co.za/',
     APP_PORT: 80,
     STORAGE_KEY: 'mini-reader-storage',
-    CTRL_ERROR_KEY: 'e' 
+    CTRL_ERROR_KEY: 'e',
+    DB_NAME: 'mini_reader',
+    DB_USER: 'cp',
+    DB_PASSWORD: '4334.4334',
+    LOG_SQL: false,
 };
 
 // Freeze the object to prevent modifications
